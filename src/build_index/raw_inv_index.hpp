@@ -17,9 +17,11 @@ inline std::pair<common::DocInvIndex, common::Dictionary> raw_to_fi(const Raw &r
     NOT_IMPLEMENTED;
 }
 
-inline Raw build_raw(std::filesystem::directory_iterator dir) {
+inline std::pair<Raw, size_t> build_raw(std::filesystem::directory_iterator dir) {
     Raw raw;
+    size_t N = 1;
     for (auto docId = 0; auto &p : dir) {
+        N++;
 
         std::ifstream fin(p.path().string());
 
@@ -41,7 +43,7 @@ inline Raw build_raw(std::filesystem::directory_iterator dir) {
             iter_p->emplace_back(pos);
         }
     }
-    return raw;
+    return {std::move(raw), N};
 }
 
 } // namespace ir::build_index

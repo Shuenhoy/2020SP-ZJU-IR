@@ -11,6 +11,11 @@ namespace ir::common {
 struct DocInvIndexElement {
     std::vector<size_t> doc_ids;
     std::vector<std::vector<size_t>> positions;
+    size_t df;
+    DocInvIndexElement() : df(0) {}
+    DocInvIndexElement(DocInvIndexElement &&rhs) = default;
+    DocInvIndexElement(const DocInvIndexElement &rhs) = default;
+    DocInvIndexElement &operator=(const DocInvIndexElement &rhs) = default;
 };
 
 template <>

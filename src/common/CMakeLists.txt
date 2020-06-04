@@ -6,4 +6,5 @@ add_library(common
                 doc_inv_index.hpp
                 kgram_inv_index.hpp
                 preprocess.hpp
+                doc_info.hpp
                 dummy.cpp)

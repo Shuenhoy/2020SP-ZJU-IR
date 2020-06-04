@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <fstream>
 #include <functional>
+#include <string>
 #include <type_traits>
 
 #define NOT_IMPLEMENTED                      \
