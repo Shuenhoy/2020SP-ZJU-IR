@@ -1,0 +1,10 @@
+version: '3'
+services:
+  dev:
+    user: vscode
+    build: .
+    volumes:
+      - .:/workspace
+      - /home/$USER/.ssh/authorized_keys:/home/vscode/.ssh/authorized_keys
+    ports:
+      - "2222:22"

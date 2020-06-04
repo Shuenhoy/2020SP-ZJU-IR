@@ -1,0 +1,37 @@
+#pragma once
+
+#include "common.hpp"
+
+#include <string>
+#include <string_view>
+
+namespace ir::common {
+struct Dictionary {
+    struct Element {
+        size_t pos, len;
+        void serialize(std::ofstream &fout) {
+            NOT_IMPLEMENTED;
+        }
+        static Element deserialize(std::ifstream &fin) {
+            NOT_IMPLEMENTED;
+        }
+    };
+    std::string dic;
+
+    std::string_view get(size_t pos, size_t len) {
+        return std::string_view(dic).substr(pos, len);
+    };
+};
+} // namespace ir::common
+
+namespace std {
+template <>
+struct hash<ir::common::Dictionary::Element> {
+    size_t operator()(const ir::common::Dictionary::Element &e) const {
+        size_t seed = 0;
+        ir::common::hash_combine(seed, e.pos);
+        ir::common::hash_combine(seed, e.len);
+        return seed;
+    }
+};
+} // namespace std
