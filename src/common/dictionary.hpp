@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.hpp"
+#include "serialization.hpp"
 
 #include <string>
 #include <string_view>
@@ -22,6 +23,17 @@ struct Dictionary {
         return std::string_view(dic).substr(pos, len);
     };
 };
+
+template <>
+struct Serialization<Dictionary::Element> {
+    static void serialize(std::ofstream &fout, const Dictionary::Element &a) {
+        NOT_IMPLEMENTED;
+    }
+    static Dictionary::Element deserialize(std::ifstream &fin) {
+        NOT_IMPLEMENTED;
+    }
+};
+
 } // namespace ir::common
 
 namespace std {

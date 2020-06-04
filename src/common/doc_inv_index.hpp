@@ -3,6 +3,8 @@
 #include "common.hpp"
 #include "dictionary.hpp"
 #include "index.hpp"
+#include "serialization.hpp"
+
 #include <vector>
 
 namespace ir::common {
@@ -10,8 +12,11 @@ struct DocInvIndexElement {
     size_t tf;
     std::vector<size_t> doc_ids;
     std::vector<std::vector<size_t>> positions;
+};
 
-    void serialize(std::ofstream &fout) {
+template <>
+struct Serialization<DocInvIndexElement> {
+    static void serialize(std::ofstream &fout, const DocInvIndexElement &a) {
         NOT_IMPLEMENTED;
     }
     static DocInvIndexElement deserialize(std::ifstream &fin) {
