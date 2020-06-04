@@ -9,7 +9,6 @@
 
 namespace ir::common {
 struct DocInvIndexElement {
-    size_t tf;
     std::vector<size_t> doc_ids;
     std::vector<std::vector<size_t>> positions;
 };

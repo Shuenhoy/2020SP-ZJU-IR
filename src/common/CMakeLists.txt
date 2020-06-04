@@ -5,4 +5,5 @@ add_library(common
                 dictionary.hpp
                 doc_inv_index.hpp
                 kgram_inv_index.hpp
+                preprocess.hpp
                 dummy.cpp)
