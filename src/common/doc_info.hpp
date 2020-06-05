@@ -11,14 +11,14 @@ struct DocumentInfoElement {
     double norm;
 };
 
-using DocumentInfo = std::vector<DocumentInfoElement>;
+using DocumentInfos = std::vector<DocumentInfoElement>;
 
 template <>
-struct Serialization<DocumentInfo> {
-    static void serialize(std::ofstream &fout, const DocumentInfo &a) {
+struct Serialization<DocumentInfos> {
+    static void serialize(std::ofstream &fout, const DocumentInfos &a) {
         NOT_IMPLEMENTED;
     }
-    static DocumentInfo deserialize(std::ifstream &fin) {
+    static DocumentInfos deserialize(std::ifstream &fin) {
         NOT_IMPLEMENTED;
     }
 };

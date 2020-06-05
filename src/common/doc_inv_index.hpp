@@ -4,6 +4,7 @@
 #include "dictionary.hpp"
 #include "index.hpp"
 #include "serialization.hpp"
+#include "vec.hpp"
 
 #include <vector>
 
@@ -16,6 +17,10 @@ struct DocInvIndexElement {
     DocInvIndexElement(DocInvIndexElement &&rhs) = default;
     DocInvIndexElement(const DocInvIndexElement &rhs) = default;
     DocInvIndexElement &operator=(const DocInvIndexElement &rhs) = default;
+
+    double cos_dist(const vec::Vec &query, size_t doc) const {
+        NOT_IMPLEMENTED;
+    }
 };
 
 template <>

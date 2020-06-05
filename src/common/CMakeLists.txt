@@ -7,4 +7,6 @@ add_library(common
                 kgram_inv_index.hpp
                 preprocess.hpp
                 doc_info.hpp
+                vec.hpp
+                lead_follow_inv_index.hpp
                 dummy.cpp)

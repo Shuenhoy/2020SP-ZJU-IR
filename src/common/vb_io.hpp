@@ -2,12 +2,18 @@
 #include <fstream>
 
 #include "common.hpp"
+#include "serialization.hpp"
 
 namespace ir::common {
-inline size_t read_vb_int(std::ifstream &file) {
-    NOT_IMPLEMENTED;
-}
-inline void write_vb_int(std::ofstream &file) {
-    NOT_IMPLEMENTED;
-}
+
+// VB code
+template <>
+struct Serialization<size_t> {
+    static void serialize(std::ofstream &fout, size_t &a) {
+        NOT_IMPLEMENTED;
+    }
+    static size_t deserialize(std::ifstream &fin) {
+        NOT_IMPLEMENTED;
+    }
+};
 } // namespace ir::common
