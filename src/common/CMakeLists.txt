@@ -4,7 +4,7 @@ add_library(common
                 common.hpp
                 dictionary.hpp
                 doc_inv_index.hpp
-                kgram_inv_index.hpp
+                kgram.hpp
                 preprocess.hpp
                 doc_info.hpp
                 vec.hpp

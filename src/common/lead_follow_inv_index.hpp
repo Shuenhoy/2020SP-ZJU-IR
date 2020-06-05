@@ -4,8 +4,8 @@
 #include "dictionary.hpp"
 #include "index.hpp"
 #include "serialization.hpp"
+#include "vb_io.hpp"
 #include "vec.hpp"
-
 #include <vector>
 
 namespace ir::common {
