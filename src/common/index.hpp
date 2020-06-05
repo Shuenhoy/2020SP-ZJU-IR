@@ -11,6 +11,7 @@ namespace ir::common {
 template <typename K, typename V>
 requires Serializable<K> &&Hashable<K> &&Serializable<V> struct Index {
     std::unordered_map<K, std::vector<V>> index;
+    std::vector<decltype(index.begin())> items;
     void serialize(std::ofstream &fout) {
         NOT_IMPLEMENTED;
     }

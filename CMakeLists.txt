@@ -5,3 +5,4 @@ include_directories(src)
 
 add_subdirectory(src/common)
 add_subdirectory(src/build_index)
+add_subdirectory(src/ir)

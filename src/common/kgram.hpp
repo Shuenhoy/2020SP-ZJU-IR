@@ -12,5 +12,6 @@ namespace ir::common {
 using KGramInvIndex = Index<Dictionary::Element, Dictionary::Element>;
 
 inline std::vector<Dictionary::Element> kgram(std::string_view token, const Dictionary &kgram_dic) {
+    NOT_IMPLEMENTED;
 }
 } // namespace ir::common
