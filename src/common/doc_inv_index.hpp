@@ -33,5 +33,5 @@ struct Serialization<DocInvIndexElement> {
     }
 };
 
-using DocInvIndex = Index<Dictionary::Element, DocInvIndexElement>;
+using DocInvIndex = Index<Dictionary::Element, std::string_view, DocInvIndexElement>;
 } // namespace ir::common

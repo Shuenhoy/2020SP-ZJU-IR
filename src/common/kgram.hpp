@@ -9,7 +9,7 @@
 
 namespace ir::common {
 
-using KGramInvIndex = Index<Dictionary::Element, Dictionary::Element>;
+using KGramInvIndex = Index<Dictionary::Element, std::string_view, Dictionary::Element>;
 
 inline std::vector<Dictionary::Element> kgram(std::string_view token, const Dictionary &kgram_dic) {
     NOT_IMPLEMENTED;

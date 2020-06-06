@@ -8,8 +8,8 @@
 
 namespace ir::common {
 
-template <typename K, typename V>
-requires Serializable<K> &&Hashable<K> &&Serializable<V> struct Index {
+template <typename K, typename C, typename V>
+requires Serializable<K> &&Hashable<K> &&Serializable<V> &&CompareWith<K, C> struct Index {
     std::unordered_map<K, std::vector<V>> index;
     std::vector<decltype(index.begin())> items;
     void serialize(std::ofstream &fout) {
