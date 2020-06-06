@@ -9,7 +9,7 @@
 namespace ir::ir {
 std::vector<size_t> topk(const common::vec::Vec &vec, size_t K,
                          const common::LeadFollowInvIndex &lead_follow,
-                         const common::DocInvIndex *doc_inv) {
+                         const common::DocInvIndex &doc_inv) {
     NOT_IMPLEMENTED;
 }
 } // namespace ir::ir
