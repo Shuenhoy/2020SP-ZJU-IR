@@ -1,4 +1,4 @@
-# 2020SP-ZJU-WebSearch
+# 2020SP-ZJU-IR
 
 ## 通配查询
 * 构建K-gram倒排索引
