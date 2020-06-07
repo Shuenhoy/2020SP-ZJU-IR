@@ -11,7 +11,7 @@ namespace ir::common {
 // VB code
 template <>
 struct Serialization<size_t> {
-    static void serialize(std::ofstream &fout, size_t &b) {
+    static void serialize(std::ofstream &fout, const size_t &b) {
         std::vector<uint8_t> bytes;
         size_t a = b;
 
