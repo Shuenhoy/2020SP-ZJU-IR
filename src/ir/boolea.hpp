@@ -12,6 +12,9 @@ struct BooleanOperator {
 };
 
 struct BooleanOperatorUnion : public BooleanOperator {
+    BooleanOperatorUnion(BooleanOperatorUnion &&rhs) = default;
+    BooleanOperatorUnion &operator=(BooleanOperatorUnion &&rhs) = default;
+
     std::unique_ptr<BooleanOperator> left, right;
     virtual std::vector<size_t> exec() {
         return IndexOp<size_t>::index_union(left->exec(), right->exec());
@@ -19,6 +22,9 @@ struct BooleanOperatorUnion : public BooleanOperator {
 };
 
 struct BooleanOperatorIntersection : public BooleanOperator {
+    BooleanOperatorIntersection(BooleanOperatorIntersection &&rhs) = default;
+    BooleanOperatorIntersection &operator=(BooleanOperatorIntersection &&rhs) = default;
+
     std::unique_ptr<BooleanOperator> left, right;
 
     virtual std::vector<size_t> exec() {
@@ -27,6 +33,10 @@ struct BooleanOperatorIntersection : public BooleanOperator {
 };
 
 struct BooleanOperatorDifference : public BooleanOperator {
+
+    BooleanOperatorDifference(BooleanOperatorDifference &&rhs) = default;
+    BooleanOperatorDifference &operator=(BooleanOperatorDifference &&rhs) = default;
+
     std::unique_ptr<BooleanOperator> left, right;
 
     virtual std::vector<size_t> exec() {
@@ -35,22 +45,36 @@ struct BooleanOperatorDifference : public BooleanOperator {
 };
 
 struct BooleanOperatorToken : public BooleanOperator {
+
+    BooleanOperatorToken(BooleanOperatorToken &&rhs) = default;
+    BooleanOperatorToken &operator=(BooleanOperatorToken &&) = default;
+
     virtual std::vector<size_t> exec() {
         NOT_IMPLEMENTED;
     }
 };
 
 struct BooleanOperatorWildcard : public BooleanOperator {
+    BooleanOperatorWildcard(BooleanOperatorWildcard &&rhs) = default;
+    BooleanOperatorWildcard &operator=(BooleanOperatorWildcard &&) = default;
+
     virtual std::vector<size_t> exec() {
         NOT_IMPLEMENTED;
     }
 };
 
 struct BooleanOperatorPhrase : public BooleanOperator {
+    BooleanOperatorPhrase(BooleanOperatorPhrase &&rhs) = default;
+    BooleanOperatorPhrase &operator=(BooleanOperatorPhrase &&) = default;
+
     virtual std::vector<size_t> exec() {
         NOT_IMPLEMENTED;
     }
 };
+
+inline std::unique_ptr<BooleanOperator> parse(const std::string &input) {
+    NOT_IMPLEMENTED;
+}
 
 inline const std::vector<size_t> &
 remove_position(const common::DocInvIndexElement &ind) {

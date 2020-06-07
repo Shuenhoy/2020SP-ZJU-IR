@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace ir::common {
-inline std::vector<std::string> tokenize(std::string_view input) {
+inline std::vector<std::string_view> tokenize(std::string_view input) {
     NOT_IMPLEMENTED;
 }
 

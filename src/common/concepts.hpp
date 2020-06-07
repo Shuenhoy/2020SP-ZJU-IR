@@ -26,20 +26,6 @@ struct Comparison {
     static inline bool Compare(T &&a, V &&b);
 };
 
-template <typename T, typename V>
-concept CompareWith =
-    requires(T a, V b) {
-    { Comparison<T, V>::Compare(a, b) }
-    ->std::convertible_to<bool>;
-};
-
-template <>
-struct Comparison<size_t, size_t> {
-    static inline bool Compare(size_t a, size_t b) {
-        return a < b;
-    }
-};
-
 template <typename T>
 concept Serializable = requires(T a, std::ofstream &fout, std::ifstream &fin) {
     {Serialization<T>::serialize(fout, a)};

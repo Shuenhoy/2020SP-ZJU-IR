@@ -9,9 +9,11 @@
 
 namespace ir::common {
 
-using KGramInvIndex = Index<Dictionary::Element, std::string_view, Dictionary::Element>;
+using KGramInvIndex = Index<Dictionary::Element, Dictionary::Element>;
 
-inline std::vector<Dictionary::Element> kgram(std::string_view token, const Dictionary &kgram_dic) {
+inline std::vector<Dictionary::Element> kgram(std::string_view token,
+                                              const Dictionary &kgram_dict,
+                                              const KGramInvIndex &kgram_index) {
     NOT_IMPLEMENTED;
 }
 } // namespace ir::common

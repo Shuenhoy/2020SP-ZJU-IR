@@ -10,5 +10,5 @@
 
 namespace ir::common {
 
-using LeadFollowInvIndex = Index<size_t, size_t, size_t>;
+using LeadFollowInvIndex = Index<size_t, size_t>;
 } // namespace ir::common

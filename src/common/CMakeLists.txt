@@ -9,4 +9,5 @@ add_library(common
                 doc_info.hpp
                 vec.hpp
                 lead_follow_inv_index.hpp
+                find_in_dict.hpp
                 dummy.cpp)

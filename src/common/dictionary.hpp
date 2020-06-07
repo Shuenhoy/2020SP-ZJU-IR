@@ -11,10 +11,7 @@ namespace ir::common {
 struct Dictionary {
     struct Element {
         size_t pos, len;
-        const Dictionary &dict;
-        std::string_view get() const {
-            return dict.get(pos, len);
-        }
+
         void serialize(std::ofstream &fout) {
             NOT_IMPLEMENTED;
         }
@@ -27,6 +24,10 @@ struct Dictionary {
     std::string_view get(size_t pos, size_t len) const {
         return std::string_view(dic).substr(pos, len);
     };
+
+    std::string_view get(const Element &e) const {
+        return get(e.pos, e.len);
+    }
 };
 
 template <>
@@ -36,13 +37,6 @@ struct Serialization<Dictionary::Element> {
     }
     static Dictionary::Element deserialize(std::ifstream &fin) {
         NOT_IMPLEMENTED;
-    }
-};
-
-template <>
-struct Comparison<Dictionary::Element, std::string_view> {
-    static inline bool Compare(const Dictionary::Element &a, std::string_view b) {
-        return a.get() < b;
     }
 };
 

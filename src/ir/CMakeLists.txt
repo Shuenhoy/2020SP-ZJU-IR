@@ -5,4 +5,5 @@ add_executable(ir
     boolea.hpp
     topk.hpp
     wildcard.hpp
+    spelling_correction.hpp
 )
