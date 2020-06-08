@@ -3,6 +3,7 @@
 #include "common.hpp"
 #include "concepts.hpp"
 #include "serialization.hpp"
+#include "vb_io.hpp"
 
 #include <string>
 #include <string_view>
@@ -11,13 +12,6 @@ namespace ir::common {
 struct Dictionary {
     struct Element {
         size_t pos, len;
-
-        void serialize(std::ofstream &fout) {
-            NOT_IMPLEMENTED;
-        }
-        static Element deserialize(std::ifstream &fin) {
-            NOT_IMPLEMENTED;
-        }
     };
     std::string dic;
 
@@ -33,10 +27,29 @@ struct Dictionary {
 template <>
 struct Serialization<Dictionary::Element> {
     static void serialize(std::ofstream &fout, const Dictionary::Element &a) {
-        NOT_IMPLEMENTED;
+        Serialization<size_t>::serialize(fout, a.pos);
+        Serialization<size_t>::serialize(fout, a.len);
     }
     static Dictionary::Element deserialize(std::ifstream &fin) {
-        NOT_IMPLEMENTED;
+        Dictionary::Element ele;
+        ele.pos = Serialization<size_t>::deserialize(fin);
+        ele.len = Serialization<size_t>::deserialize(fin);
+        return ele;
+    }
+};
+
+template <>
+struct Serialization<Dictionary> {
+    static void serialize(std::ofstream &fout, const Dictionary &a) {
+        Serialization<size_t>::serialize(fout, a.dic.size());
+        fout.write(a.dic.data(), a.dic.size());
+    }
+    static Dictionary deserialize(std::ifstream &fin) {
+        Dictionary ret;
+        size_t n = Serialization<size_t>::deserialize(fin);
+        ret.dic.resize(n);
+        fin.read(ret.dic.data(), n);
+        return ret;
     }
 };
 
