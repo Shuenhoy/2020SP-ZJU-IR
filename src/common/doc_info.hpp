@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "common_serialization.hpp"
 #include "serialization.hpp"
-#include "string_serialization.hpp"
 #include "vb_io.hpp"
 
 namespace ir::common {
@@ -26,7 +26,7 @@ struct Serialization<DocumentInfos> {
     }
     static DocumentInfos deserialize(std::ifstream &fin) {
         DocumentInfos infos(Serialization<size_t>::deserialize(fin));
-        for (auto i = 0; i < n; i++) {
+        for (auto i = 0; i < infos.size(); i++) {
             infos[i].file_name = Serialization<std::string>::deserialize(fin);
             infos[i].norm = Serialization<double>::deserialize(fin);
         }

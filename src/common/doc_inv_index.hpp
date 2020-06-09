@@ -4,6 +4,7 @@
 #include "dictionary.hpp"
 #include "index.hpp"
 #include "serialization.hpp"
+#include "vb_io.hpp"
 #include "vec.hpp"
 
 #include <vector>
@@ -26,10 +27,18 @@ struct DocInvIndexElement {
 template <>
 struct Serialization<DocInvIndexElement> {
     static void serialize(std::ofstream &fout, const DocInvIndexElement &a) {
-        NOT_IMPLEMENTED;
+        Serialization<size_t>::serialize(fout, a.df);
+        Serialization<std::vector<size_t>>::serialize(fout, a.doc_ids);
+        Serialization<std::vector<std::vector<size_t>>>::serialize(fout, a.positions);
     }
     static DocInvIndexElement deserialize(std::ifstream &fin) {
-        NOT_IMPLEMENTED;
+        DocInvIndexElement ret;
+
+        ret.df = Serialization<size_t>::deserialize(fin);
+        ret.doc_ids = Serialization<std::vector<size_t>>::deserialize(fin);
+        ret.positions = Serialization<std::vector<std::vector<size_t>>>::deserialize(fin);
+
+        return ret;
     }
 };
 

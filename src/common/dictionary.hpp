@@ -1,9 +1,9 @@
 #pragma once
 
 #include "common.hpp"
+#include "common_serialization.hpp"
 #include "concepts.hpp"
 #include "serialization.hpp"
-#include "string_serialization.hpp"
 #include "vb_io.hpp"
 
 #include <string>
