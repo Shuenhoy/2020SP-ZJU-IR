@@ -24,7 +24,7 @@ inline std::string read_file(std::ifstream &t) {
 }
 
 template <class ForwardIt, class Compare>
-requires std::is_invocable_r_v<bool, Compare, decltype(*std::decay<ForwardIt>())>
+requires std::is_invocable_r_v<bool, Compare, typename ForwardIt::value_type>
     ForwardIt binary_search(ForwardIt first, ForwardIt last, Compare comp) {
     ForwardIt it;
     typename std::iterator_traits<ForwardIt>::difference_type count, step;
@@ -44,7 +44,8 @@ requires std::is_invocable_r_v<bool, Compare, decltype(*std::decay<ForwardIt>())
 }
 
 template <class ForwardIt, class T, class Compare = std::less<>>
-ForwardIt binary_search(ForwardIt first, ForwardIt last, const T &value, Compare comp = {}) {
+requires std::is_invocable_r_v<bool, Compare, T, T>
+    ForwardIt binary_search(ForwardIt first, ForwardIt last, const T &value, Compare comp = {}) {
     first = std::lower_bound(first, last, value, comp);
     return first != last && !comp(value, *first) ? first : last;
 }
