@@ -3,6 +3,7 @@
 #include "common.hpp"
 #include "concepts.hpp"
 #include "serialization.hpp"
+#include "string_serialization.hpp"
 #include "vb_io.hpp"
 
 #include <string>
@@ -41,14 +42,11 @@ struct Serialization<Dictionary::Element> {
 template <>
 struct Serialization<Dictionary> {
     static void serialize(std::ofstream &fout, const Dictionary &a) {
-        Serialization<size_t>::serialize(fout, a.dic.size());
-        fout.write(a.dic.data(), a.dic.size());
+        Serialization<std::string>::serialize(fout, a.dic);
     }
     static Dictionary deserialize(std::ifstream &fin) {
         Dictionary ret;
-        size_t n = Serialization<size_t>::deserialize(fin);
-        ret.dic.resize(n);
-        fin.read(ret.dic.data(), n);
+        ret.dic = Serialization<std::string>::deserialize(fin);
         return ret;
     }
 };

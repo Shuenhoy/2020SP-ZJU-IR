@@ -41,4 +41,5 @@ struct Serialization<size_t> {
         throw std::runtime_error("VB broken!");
     }
 };
+
 } // namespace ir::common

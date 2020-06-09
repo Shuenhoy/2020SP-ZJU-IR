@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "serialization.hpp"
+#include "string_serialization.hpp"
+#include "vb_io.hpp"
 
 namespace ir::common {
 struct DocumentInfoElement {
@@ -16,10 +18,18 @@ using DocumentInfos = std::vector<DocumentInfoElement>;
 template <>
 struct Serialization<DocumentInfos> {
     static void serialize(std::ofstream &fout, const DocumentInfos &a) {
-        NOT_IMPLEMENTED;
+        Serialization<size_t>::serialize(fout, a.size());
+        for (auto &&x : a) {
+            Serialization<std::string>::serialize(fout, x.file_name);
+            Serialization<double>::serialize(fout, x.norm);
+        }
     }
     static DocumentInfos deserialize(std::ifstream &fin) {
-        NOT_IMPLEMENTED;
+        DocumentInfos infos(Serialization<size_t>::deserialize(fin));
+        for (auto i = 0; i < n; i++) {
+            infos[i].file_name = Serialization<std::string>::deserialize(fin);
+            infos[i].norm = Serialization<double>::deserialize(fin);
+        }
     }
 };
 
