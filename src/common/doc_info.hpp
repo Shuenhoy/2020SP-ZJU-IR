@@ -30,6 +30,7 @@ struct Serialization<DocumentInfos> {
             infos[i].file_name = Serialization<std::string>::deserialize(fin);
             infos[i].norm = Serialization<double>::deserialize(fin);
         }
+        return infos;
     }
 };
 

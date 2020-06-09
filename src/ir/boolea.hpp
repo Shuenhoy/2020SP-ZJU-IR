@@ -76,9 +76,13 @@ inline std::unique_ptr<BooleanOperator> parse(const std::string &input) {
     NOT_IMPLEMENTED;
 }
 
-inline const std::vector<size_t> &
-remove_position(const common::DocInvIndexElement &ind) {
-    return ind.doc_ids;
+inline std::vector<size_t>
+remove_position(const std::vector<common::DocInvIndexElement> &ind) {
+    std::vector<size_t> ret;
+    std::transform(ind.begin(), ind.end(), std::back_inserter(ret), [](auto &&x) {
+        return x.doc_id;
+    });
+    return ret;
 }
 
 } // namespace ir::ir
