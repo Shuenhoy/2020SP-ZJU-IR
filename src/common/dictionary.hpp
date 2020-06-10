@@ -13,6 +13,10 @@ namespace ir::common {
 struct Dictionary {
     struct Element {
         size_t pos, len;
+
+        bool operator==(const Element& other) {
+            return pos == other.pos && len == other.len;
+        }
     };
     std::string dic;
 
