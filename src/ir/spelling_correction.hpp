@@ -43,6 +43,7 @@ inline common::Dictionary::Element spelling_correct(std::string_view input,
         }
         if (similarity > max_similarity) {
             most_similar = index;
+            max_similarity = similarity;
         }
     }
 
