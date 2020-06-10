@@ -3,6 +3,7 @@
 #include <common/doc_inv_index.hpp>
 #include <common/lead_follow_inv_index.hpp>
 #include <common/vec.hpp>
+#include <common/preprocess.hpp>
 
 #include <algorithm>
 #include <random>
