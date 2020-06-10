@@ -1,5 +1,7 @@
 #pragma once
 
+#include "raw.hpp"
+
 #include <common/common.hpp>
 #include <common/doc_inv_index.hpp>
 
@@ -11,14 +13,9 @@
 #include <fstream>
 
 namespace ir::build_index {
-using Raw = std::unordered_map<std::string, std::vector<common::DocInvIndexElement>>;
 
-inline std::pair<common::DocInvIndex, common::Dictionary> raw_to_fi(const Raw &raw) {
-    NOT_IMPLEMENTED;
-}
-
-inline std::pair<Raw, size_t> build_raw(std::filesystem::directory_iterator dir) {
-    Raw raw;
+inline std::pair<Raw<common::DocInvIndexElement>, size_t> build_raw(std::filesystem::directory_iterator dir) {
+    Raw<common::DocInvIndexElement> raw;
     size_t N = 1;
     for (auto docId = 0; auto &p : dir) {
         N++;
