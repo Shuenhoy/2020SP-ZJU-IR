@@ -59,28 +59,38 @@ inline std::vector<size_t> bool_eval(const std::string &input,
         std::vector<size_t> docids;
 
         /* 遇到与、或、非时改变状态，并跳过此 token */
-        if (is_op("NOT", tokens[i])) {
+        if (is_op("NOT", tokens[i++])) {
             invert = true;
-            i++;
-        } else if (is_op("AND", tokens[i])) {
+        } else if (is_op("AND", tokens[i++])) {
             merge = true;
-            i++;
-        } else if (is_op("OR", tokens[i])) {
+        } else if (is_op("OR", tokens[i++])) {
             merge = false;
-            i++;
         }
 
         if (is_phrase_begin(tokens[i])) { // 短语
+            /* 将前后双引号去除 */
             std::vector<std::string_view> phrase(1, tokens[i].substr(1, tokens[i].size() - 1));
             i++;
             while (!is_phrase_end(tokens[i])) {
                 phrase.push_back(tokens[i++]);
             }
             phrase.push_back(tokens[i].substr(0, tokens[i++].size() - 1));
-            NOT_IMPLEMENTED;
+
+            /* 对短语中每个单词对应的文档 ID 取交集 */
+            auto dict_ele = spelling_correct(phrase[0], k, threshold, dict, kgram_dict, kgram_index);
+            std::vector<size_t> ph_index = ir::remove_position(index.index.at(dict_ele));
+
+            for (auto i = 1; i < phrase.size(); i++) {
+                auto dict_ele = spelling_correct(phrase[i], k, threshold, dict, kgram_dict, kgram_index);
+                auto idx = ir::remove_position(index.index.at(dict_ele));
+                std::set_intersection(ph_index.begin(), ph_index.end(), idx.begin(), idx.end(), std::back_inserter(ph_index));
+            }
+
+            /* 最后结果压栈 */
+            OR_stack.push(ph_index);
         } else if (is_wildcard(tokens[i])) { // 通配符
             NOT_IMPLEMENTED;
-        } else {                             // 单个词项
+        } else { // 单个词项
             auto idx = spelling_correct(tokens[i], k, threshold, dict, kgram_dict, kgram_index);
             OR_stack.push(ir::remove_position(index.index.at(idx)));
         }
