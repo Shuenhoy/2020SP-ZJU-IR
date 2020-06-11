@@ -30,5 +30,6 @@ inline common::DocumentInfos build_doc_infos(std::filesystem::directory_iterator
         ele.norm = std::sqrt(norm);
         ret.push_back(ele);
     }
+    return ret;
 }
 } // namespace ir::build_index
