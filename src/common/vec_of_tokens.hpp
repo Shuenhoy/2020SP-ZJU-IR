@@ -1,4 +1,7 @@
 #pragma once
+#include <unordered_map>
+#include <vector>
+
 #include "dictionary.hpp"
 #include "doc_inv_index.hpp"
 #include "find_in_dict.hpp"
@@ -20,7 +23,7 @@ inline Vec vec_of_tokens(const std::vector<std::string_view> &tokens,
     Vec ret;
     double norm = 0;
     for (auto &&[t, tf] : ts) {
-        double idf = std::log10(doc_infos.size() / index.extra_info[t]);
+        double idf = std::log10(doc_infos.size() / index.index.find(index.items[t])->second.size());
         double tfidf = std::log(1 + tf) * idf;
         norm += tfidf * tfidf;
         ret.push_back({t, tfidf});

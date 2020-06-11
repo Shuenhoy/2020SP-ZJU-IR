@@ -49,7 +49,7 @@ double cos_dist(const vec::Vec &query, size_t doc, const DocInvIndex &index, con
         if (item != ts.end()) {
             tf = item->positions.size();
         }
-        auto df = index.extra_info[x.first];
+        auto df = ts.size();
         double idf = std::log10(doc_infos.size() / static_cast<double>(1 + df));
         ans += x.second * std::log10(1 + tf) * idf;
         norm += x.second * x.second;
