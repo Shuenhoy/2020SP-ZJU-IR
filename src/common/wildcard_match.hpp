@@ -7,8 +7,18 @@
 #include "dictionary.hpp"
 
 namespace ir::common {
+
+struct pair_hash
+{
+    template <class T1, class T2>
+    std::size_t operator() (const std::pair<T1, T2> &pair) const
+    {
+        return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
+    }
+};
+
 bool wildcard_match(std::string_view str, std::string_view pattern) {
-    std::unordered_map<std::pair<size_t, size_t>, bool> memo;
+    std::unordered_map<std::pair<size_t, size_t>, bool, pair_hash> memo;
 
     auto wild = [&](size_t i, size_t j, auto &&rec) mutable -> bool {
         if (memo.contains({i, j}))
