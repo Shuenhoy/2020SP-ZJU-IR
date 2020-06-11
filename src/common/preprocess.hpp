@@ -17,11 +17,10 @@ inline std::vector<std::string_view> tokenize(std::string_view input) {
     for (size_t i = 0; i < input.size(); i++) {
         if (is_token(input[i])) {
             size_t begin = i;
-            while (is_token(input[++i]))
+            while (++i < input.size() && is_token(input[i]))
                 ;
             size_t length = i - begin;
-            std::string_view token(input.data() + begin, length);
-            tokens.push_back(token);
+            tokens.push_back(input.substr(i, length));
         }
     }
     return tokens;
