@@ -6,6 +6,7 @@
 #include <stack>
 
 #include "index_op.hpp"
+#include "phrase.hpp"
 #include "spelling_correction.hpp"
 #include <memory>
 
@@ -41,7 +42,7 @@ remove_position(const std::vector<common::DocInvIndexElement> &ind) {
 
 /* 给定布尔表达式 input，返回最终的文档 ID 列表。
    布尔表达式支持 OR、AND、NOT、短语（用双引号扩起来）和通配符（带*号）。
-   不打算支持自定义优先级（即括号），短语中也不能有通配符。 */
+   没有构建逆波兰表达式，不支持自定义优先级（即括号）和短语中的通配符。 */
 inline std::vector<size_t> bool_eval(const std::string &input,
                                      const size_t k,
                                      const double threshold,
@@ -67,6 +68,7 @@ inline std::vector<size_t> bool_eval(const std::string &input,
             merge = false;
         }
 
+        /* 不可能连续遇到两个布尔运算符，因此此时应是单个单词、短语或带有通配符的单个单词 */
         if (is_phrase_begin(tokens[i])) { // 短语
             /* 将前后双引号去除 */
             std::vector<std::string_view> phrase(1, tokens[i].substr(1, tokens[i].size() - 1));
@@ -76,18 +78,18 @@ inline std::vector<size_t> bool_eval(const std::string &input,
             }
             phrase.push_back(tokens[i].substr(0, tokens[i++].size() - 1));
 
-            /* 对短语中每个单词对应的文档 ID 取交集 */
+            /* 对短语中每个单词对应的文档 ID 取交集（带位置信息） */
             auto dict_ele = spelling_correct(phrase[0], k, threshold, dict, kgram_dict, kgram_index);
-            std::vector<size_t> ph_index = ir::remove_position(index.index.at(dict_ele));
+            std::vector<common::DocInvIndexElement> ph_inv_idx_eles = index.index.at(dict_ele);
 
-            for (auto i = 1; i < phrase.size(); i++) {
+            for (size_t i = 1; i < phrase.size(); i++) {
                 auto dict_ele = spelling_correct(phrase[i], k, threshold, dict, kgram_dict, kgram_index);
-                auto idx = ir::remove_position(index.index.at(dict_ele));
-                std::set_intersection(ph_index.begin(), ph_index.end(), idx.begin(), idx.end(), std::back_inserter(ph_index));
+                auto inv_idx_eles = index.index.at(dict_ele);
+                ph_inv_idx_eles = phrase_merge(ph_inv_idx_eles, inv_idx_eles);
             }
 
             /* 最后结果压栈 */
-            OR_stack.push(ph_index);
+            OR_stack.push(remove_position(ph_inv_idx_eles));
         } else if (is_wildcard(tokens[i])) { // 通配符
             NOT_IMPLEMENTED;
         } else { // 单个词项
