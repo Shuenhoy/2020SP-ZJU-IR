@@ -15,7 +15,7 @@ template <typename K, typename V, typename Extra = size_t>
 requires Serializable<K> &&Hashable<K> &&Serializable<V> &&Serializable<Extra> struct Index {
     std::unordered_map<K, std::vector<V>> index;
     std::vector<Extra> extra_info;
-    std::vector<decltype(index.begin())> items;
+    std::vector<K> items;
     void serialize(std::ofstream &fout) {
         Serialization<std::vector<Extra>>::serialize(fout, extra_info);
         Serialization<size_t>::serialize(fout, items.size());

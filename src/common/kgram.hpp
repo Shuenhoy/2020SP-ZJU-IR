@@ -22,7 +22,7 @@ inline std::vector<Dictionary::Element> kgram(std::string_view token, size_t k,
         auto x = find_in_dict<Dictionary::Element>(
             token.substr(i, k), kgram_dict, kgram_index);
         assert(x != kgram_index.items.end());
-        ret.push_back((*x)->first);
+        ret.push_back(*x);
     }
     return ret;
 }

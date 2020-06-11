@@ -10,13 +10,13 @@ namespace ir::build_index {
 inline Raw<ir::common::Dictionary::Element> build_kgram(const common::Dictionary &dic, const common::DocInvIndex &index, size_t k) {
     Raw<ir::common::Dictionary::Element> raw;
     for (auto &&x : index.items) {
-        auto token = dic.get(x->first);
+        auto token = dic.get(x);
         for (auto i = 0; i < token.size() - k; i++) {
             std::string kg{token.substr(i, k)};
             if (!raw.contains(kg)) {
                 raw[kg] = {};
             }
-            raw[kg].push_back(x->first);
+            raw[kg].push_back(x);
         }
     }
     return raw;

@@ -10,5 +10,6 @@ add_library(common
                 vec.hpp
                 lead_follow_inv_index.hpp
                 find_in_dict.hpp
+                vec_of_tokens.hpp
                 common_serialization.hpp
                 dummy.cpp)
