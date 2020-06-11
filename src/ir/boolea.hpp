@@ -8,6 +8,7 @@
 #include "index_op.hpp"
 #include "phrase.hpp"
 #include "spelling_correction.hpp"
+#include "wildcard.hpp"
 #include <memory>
 
 namespace ir::ir {
@@ -40,32 +41,56 @@ remove_position(const std::vector<common::DocInvIndexElement> &ind) {
     return ret;
 }
 
+inline std::vector<size_t> index_merge(const std::vector<size_t> &origin, const std::vector<size_t> &part, bool INV, bool AND, const std::vector<size_t> &all) {
+    switch ((!!INV << 1) + !!AND) {
+    case 0:
+        return IndexOp<size_t>::index_union(origin, part);
+    case 1:
+        return IndexOp<size_t>::index_intersection(origin, part);
+    case 2:
+        return IndexOp<size_t>::index_union(origin, IndexOp<size_t>::index_difference(all, part));
+    case 3:
+        return IndexOp<size_t>::index_difference(origin, part);
+    }
+}
+
 /* 给定布尔表达式 input，返回最终的文档 ID 列表。
    布尔表达式支持 OR、AND、NOT、短语（用双引号扩起来）和通配符（带*号）。
    没有构建逆波兰表达式，不支持自定义优先级（即括号）和短语中的通配符。 */
 inline std::vector<size_t> bool_eval(const std::string &input,
                                      const size_t k,
                                      const double threshold,
+                                     const std::vector<size_t> all,
                                      const common::Dictionary &dict,
                                      const common::DocInvIndex &index,
                                      const common::Dictionary &kgram_dict,
                                      const common::KGramInvIndex &kgram_index) {
 
     std::vector<std::string_view> tokens = common::tokenize(input);
-    std::stack<std::vector<size_t>> OR_stack;
+    std::vector<size_t> ret;
 
-    bool merge = false;
+    bool INV = false;
+    bool AND = false;
     for (size_t i = 0; i < tokens.size();) {
-        bool invert = false;
-        std::vector<size_t> docids;
-
-        /* 遇到与、或、非时改变状态，并跳过此 token */
+        /* 遇到与、或、非时改变状态，并跳过 */
         if (is_op("NOT", tokens[i++])) {
-            invert = true;
+            INV = true;
         } else if (is_op("AND", tokens[i++])) {
-            merge = true;
+            AND = true;
+            if (is_op("NOT", tokens[i++]))
+                INV = true;
+            else {
+                INV = false;
+                i--;
+            }
         } else if (is_op("OR", tokens[i++])) {
-            merge = false;
+            AND = false;
+            if (is_op("NOT", tokens[i++]))
+                INV = true;
+            else {
+                INV = false;
+                i--;
+            }
         }
 
         /* 不可能连续遇到两个布尔运算符，因此此时应是单个单词、短语或带有通配符的单个单词 */
@@ -79,34 +104,29 @@ inline std::vector<size_t> bool_eval(const std::string &input,
             phrase.push_back(tokens[i].substr(0, tokens[i++].size() - 1));
 
             /* 对短语中每个单词对应的文档 ID 取交集（带位置信息） */
-            auto dict_ele = spelling_correct(phrase[0], k, threshold, dict, kgram_dict, kgram_index);
-            std::vector<common::DocInvIndexElement> ph_inv_idx_eles = index.index.at(dict_ele);
+            auto token_d = spelling_correct(phrase[0], k, threshold, dict, kgram_dict, kgram_index);
+            std::vector<common::DocInvIndexElement> ph_inv_idx = index.index.at(token_d);
 
             for (size_t i = 1; i < phrase.size(); i++) {
-                auto dict_ele = spelling_correct(phrase[i], k, threshold, dict, kgram_dict, kgram_index);
-                auto inv_idx_eles = index.index.at(dict_ele);
-                ph_inv_idx_eles = phrase_merge(ph_inv_idx_eles, inv_idx_eles);
+                auto token_d = spelling_correct(phrase[i], k, threshold, dict, kgram_dict, kgram_index);
+                auto inv_idx_eles = index.index.at(token_d);
+                ph_inv_idx = phrase_merge(ph_inv_idx, inv_idx_eles);
             }
 
-            /* 最后结果压栈 */
-            OR_stack.push(remove_position(ph_inv_idx_eles));
+            /* 融合到结果中 */
+            ret = index_merge(ret, remove_position(ph_inv_idx), INV, AND, all);
         } else if (is_wildcard(tokens[i])) { // 通配符
-            NOT_IMPLEMENTED;
+            auto token_ds = wildcard(tokens[i], k, dict, kgram_dict, kgram_index);
+            for (auto token_d : token_ds) {
+                ret = index_merge(ret, remove_position(index.index.at(token_d)), INV, AND, all);
+            }
         } else { // 单个词项
-            auto idx = spelling_correct(tokens[i], k, threshold, dict, kgram_dict, kgram_index);
-            OR_stack.push(ir::remove_position(index.index.at(idx)));
+            auto token_d = spelling_correct(tokens[i], k, threshold, dict, kgram_dict, kgram_index);
+            ret = index_merge(ret, remove_position(index.index.at(token_d)), INV, AND, all);
         }
     }
 
-    /* 将栈中的文档 ID 取并形成最终文档 ID 集合 */
-    std::vector<size_t> doc_ids;
-    while (!OR_stack.empty()) {
-        std::vector<size_t> ids = OR_stack.top();
-        OR_stack.pop();
-        std::set_union(doc_ids.begin(), doc_ids.end(), ids.begin(), ids.end(), std::back_inserter(doc_ids));
-    }
-
-    return doc_ids;
+    return ret;
 }
 
 } // namespace ir::ir
