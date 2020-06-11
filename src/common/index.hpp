@@ -14,10 +14,8 @@ namespace ir::common {
 template <typename K, typename V, typename Extra = size_t>
 requires Serializable<K> &&Hashable<K> &&Serializable<V> &&Serializable<Extra> struct Index {
     std::unordered_map<K, std::vector<V>> index;
-    std::vector<Extra> extra_info;
     std::vector<K> items;
     void serialize(std::ofstream &fout) {
-        Serialization<std::vector<Extra>>::serialize(fout, extra_info);
         Serialization<size_t>::serialize(fout, items.size());
         for (auto iter : items) {
             Serialization<K>::serialize(fout, iter->first);
@@ -30,8 +28,6 @@ requires Serializable<K> &&Hashable<K> &&Serializable<V> &&Serializable<Extra> s
     static Index<K, V, Extra> deserialize(std::ifstream &fin) {
 
         Index<K, V, Extra> ret;
-
-        ret.extra = Serialization<std::vector<Extra>>::deserialize(fin);
 
         size_t item_num = Serialization<size_t>::deserialize(fin);
         for (auto i = 0; i < item_num; i++) {
