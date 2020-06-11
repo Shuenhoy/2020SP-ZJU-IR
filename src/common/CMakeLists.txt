@@ -12,4 +12,5 @@ add_library(common
                 find_in_dict.hpp
                 vec_of_tokens.hpp
                 common_serialization.hpp
+                wildcard_match.hpp
                 dummy.cpp)

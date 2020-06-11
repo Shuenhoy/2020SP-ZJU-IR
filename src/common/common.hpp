@@ -51,3 +51,15 @@ requires std::is_invocable_r_v<bool, Compare, T, T>
 }
 
 } // namespace ir::common
+
+namespace std {
+template <typename T, typename V>
+struct hash<std::pair<T, V>> {
+    size_t operator()(const std::pair<T, V> &e) const {
+        size_t seed = 0;
+        ir::common::hash_combine(seed, e.first);
+        ir::common::hash_combine(seed, e.second);
+        return seed;
+    }
+};
+}

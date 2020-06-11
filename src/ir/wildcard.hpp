@@ -2,6 +2,8 @@
 
 #include <common/dictionary.hpp>
 #include <common/kgram.hpp>
+#include <common/wildcard_match.hpp>
+
 #include <regex>
 
 #include <string_view>
@@ -15,7 +17,6 @@ inline std::vector<common::Dictionary::Element> wildcard(std::string_view input,
                                                          const common::Dictionary &dict,
                                                          const common::Dictionary &kgram_dict,
                                                          const common::KGramInvIndex &kgram_index) {
-    std::regex re(input.data(), input.length());
     std::vector<common::Dictionary::Element> kgrams;
     std::vector<common::Dictionary::Element> ret;
 
@@ -35,8 +36,7 @@ inline std::vector<common::Dictionary::Element> wildcard(std::string_view input,
     for (auto kgram : kgrams) {
         std::vector<common::Dictionary::Element> token_ds = kgram_index.index.at(kgram);
         for (auto token_d : token_ds) {
-            std::string token_s = std::string(dict.get(token_d));
-            if (std::regex_match(token_s, re)) {
+            if (common::wildcard_match(dict.get(token_d), input)) {
                 ret.push_back(token_d);
             }
         }
