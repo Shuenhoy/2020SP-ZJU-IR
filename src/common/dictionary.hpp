@@ -14,8 +14,12 @@ struct Dictionary {
     struct Element {
         size_t pos, len;
 
-        bool operator==(const Element& other) {
+        bool operator==(const Element& other) const {
             return pos == other.pos && len == other.len;
+        }
+
+        bool operator<(const Element& other) const {
+            return pos < other.pos || (pos == other.pos && len < other.len);
         }
     };
     std::string dic;
