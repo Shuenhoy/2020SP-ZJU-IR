@@ -37,7 +37,8 @@ requires Serializable<K> &&Hashable<K> &&Serializable<V> &&Serializable<Extra> s
             for (auto j = 0; j < n; j++) {
                 vs.push_back(Serialization<V>::deserialize(fin));
             }
-            ret.items.push_back(ret.index.insert(key, std::move(vs)));
+            ret.index.insert({key, std::move(vs)});
+            ret.items.push_back(key);
         }
 
         return ret;
