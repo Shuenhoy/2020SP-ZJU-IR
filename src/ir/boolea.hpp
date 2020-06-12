@@ -41,7 +41,8 @@ remove_position(const std::vector<common::DocInvIndexElement> &ind) {
     return ret;
 }
 
-inline std::vector<size_t> index_merge(const std::vector<size_t> &origin, const std::vector<size_t> &part, bool INV, bool AND, const std::vector<size_t> &all) {
+inline std::vector<size_t>
+index_merge(const std::vector<size_t> &origin, const std::vector<size_t> &part, bool INV, bool AND, const std::vector<size_t> &all) {
     switch ((!!INV << 1) + !!AND) {
     case 0:
         return IndexOp<size_t>::index_union(origin, part);

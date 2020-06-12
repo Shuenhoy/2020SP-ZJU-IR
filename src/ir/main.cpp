@@ -1,5 +1,7 @@
+#include <cassert>
 #include <chrono>
 #include <cstdio>
+#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -30,12 +32,32 @@ int main() {
 
     /* 读取文档倒排索引、文档词典、文档信息，KGram 索引和 KGram 词典，LeadFollow 索引 */
     log("Loading index from disk...");
-    ir::common::Dictionary dict;
-    ir::common::DocInvIndex index;
-    ir::common::DocumentInfos doc_infos;
-    ir::common::Dictionary kgram_dict;
-    ir::common::KGramInvIndex kgram_index;
-    ir::common::LeadFollowInvIndex leadfollow;
+    std::ifstream dict_ifs("");
+    assert(dict_ifs.good());
+    std::ifstream index_ifs("");
+    assert(index_ifs.good());
+    std::ifstream docinfos_ifs("");
+    assert(docinfos_ifs.good());
+    std::ifstream kgramdict_ifs("");
+    assert(kgramdict_ifs.good());
+    std::ifstream kgramindex_ifs("");
+    assert(kgramdict_ifs.good());
+    std::ifstream leadfollow_ifs("");
+    assert(leadfollow_ifs.good());
+
+    ir::common::Dictionary dict = ir::common::Serialization<ir::common::Dictionary>::deserialize(dict_ifs);
+    ir::common::DocInvIndex index = ir::common::DocInvIndex::deserialize(index_ifs);
+    ir::common::DocumentInfos doc_infos = ir::common::Serialization<ir::common::DocumentInfos>::deserialize(docinfos_ifs);
+    ir::common::Dictionary kgram_dict = ir::common::Serialization<ir::common::Dictionary>::deserialize(kgramdict_ifs);
+    ir::common::KGramInvIndex kgram_index = ir::common::KGramInvIndex::deserialize(kgramindex_ifs);
+    ir::common::LeadFollowInvIndex leadfollow = ir::common::LeadFollowInvIndex::deserialize(leadfollow_ifs);
+
+    dict_ifs.close();
+    index_ifs.close();
+    docinfos_ifs.close();
+    kgramdict_ifs.close();
+    kgramindex_ifs.close();
+    leadfollow_ifs.close();
     log("Done.");
 
     /* 文档 ID 全集，用于布尔取反 */
