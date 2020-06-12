@@ -40,29 +40,41 @@ int main(int argc, char *argv[]) {
     log("Loading index from disk...");
     std::ifstream fin;
 
-    fin.open(index_dir + "/doc.index");
+    fin.open(index_dir + "/doc.index", std::ios_base::binary);
+    assert(fin.good());
     auto doc_index = ir::common::DocInvIndex::deserialize(fin);
     fin.close();
+    log("Documents index OK.");
 
-    fin.open(index_dir + "/doc.dict");
+    fin.open(index_dir + "/doc.dict", std::ios_base::binary);
+    assert(fin.good());
     auto doc_dict = ir::common::Serialization<ir::common::Dictionary>::deserialize(fin);
     fin.close();
+    log("Documents dictionary OK.");
 
-    fin.open(index_dir + "/doc.infos");
+    fin.open(index_dir + "/doc.infos", std::ios_base::binary);
+    assert(fin.good());
     auto doc_infos = ir::common::Serialization<ir::common::DocumentInfos>::deserialize(fin);
     fin.close();
+    log("Documents information OK.");
 
-    fin.open(index_dir + "/kgram.index");
+    fin.open(index_dir + "/kgram.index", std::ios_base::binary);
+    assert(fin.good());
     auto kgram_index = ir::common::KGramInvIndex::deserialize(fin);
     fin.close();
+    log("KGrams index OK.");
 
-    fin.open(index_dir + "/kgram.dict");
+    fin.open(index_dir + "/kgram.dict", std::ios_base::binary);
+    assert(fin.good());
     auto kgram_dict = ir::common::Serialization<ir::common::Dictionary>::deserialize(fin);
     fin.close();
+    log("KGrams dictionary OK.");
 
-    fin.open(index_dir + "/lead_follow.index");
+    fin.open(index_dir + "/lead_follow.index", std::ios_base::binary);
+    assert(fin.good());
     auto leadfollow = ir::common::LeadFollowInvIndex::deserialize(fin);
     fin.close();
+    log("LeadFollows index OK.");
 
     log("Done.");
 
@@ -71,6 +83,7 @@ int main(int argc, char *argv[]) {
     for (size_t i = 0; i < all.size(); i++) {
         all[i] = i;
     }
+    log("Total documents: " + std::to_string(doc_infos.size()));
 
     for (;;) {
         std::string mode;
