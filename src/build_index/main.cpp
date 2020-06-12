@@ -13,8 +13,8 @@ using namespace ir;
 using namespace std::string_literals;
 
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        std::cerr << "usage: build_index <input dir> <output dir> <kgram>";
+    if (argc != 4) {
+        std::cerr << "usage: build_index <input dir> <output dir> <kgram>" << std::endl;
         return -1;
     }
     auto input_dir = std::filesystem::directory_iterator(argv[1]);

@@ -11,11 +11,14 @@ inline Raw<ir::common::Dictionary::Element> build_kgram(const common::Dictionary
     Raw<ir::common::Dictionary::Element> raw;
     for (auto &&x : index.items) {
         auto token = dic.get(x);
-        for (auto i = 0; i < token.size() - k; i++) {
+        int i;
+        for (i = 0; i + k < token.size(); i++) {
             std::string kg{token.substr(i, k)};
-            if (!raw.contains(kg)) {
-                raw[kg] = {};
-            }
+
+            raw[kg].push_back(x);
+        }
+        if (i != token.size()) {
+            std::string kg{token.substr(i, token.size() - i)};
             raw[kg].push_back(x);
         }
     }
