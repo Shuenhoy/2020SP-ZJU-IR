@@ -11,9 +11,10 @@
 #include <common/vec_of_tokens.hpp>
 
 namespace ir::build_index {
-inline common::DocumentInfos build_doc_infos(std::filesystem::directory_iterator dir, const common::DocumentInfos &docinfos,
+inline common::DocumentInfos build_doc_infos(std::filesystem::directory_iterator dir,
                                              const common::Dictionary &dict,
-                                             const common::DocInvIndex &doc_index) {
+                                             const common::DocInvIndex &doc_index,
+                                             size_t N) {
     common::DocumentInfos ret;
     for (auto docId = 0; auto &p : dir) {
         std::ifstream fin(p.path().c_str());
@@ -21,7 +22,7 @@ inline common::DocumentInfos build_doc_infos(std::filesystem::directory_iterator
         auto ts = common::tokenize(input);
         double norm = 0;
 
-        auto xs = common::vec::vec_of_tokens(ts, doc_index, dict, docinfos);
+        auto xs = common::vec::vec_of_tokens(ts, doc_index, dict, N);
         for (auto &&x : xs) {
             norm += x.second * x.second;
         }

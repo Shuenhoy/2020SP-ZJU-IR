@@ -11,7 +11,7 @@
 namespace ir::common::vec {
 inline Vec vec_of_tokens(const std::vector<std::string_view> &tokens,
                          const common::DocInvIndex &index, const common::Dictionary &dict,
-                         const DocumentInfos &doc_infos) {
+                         size_t N) {
     std::unordered_map<size_t, size_t> ts;
     for (auto x : tokens) {
         auto t = common::unify_token(x);
@@ -23,7 +23,7 @@ inline Vec vec_of_tokens(const std::vector<std::string_view> &tokens,
     Vec ret;
     double norm = 0;
     for (auto &&[t, tf] : ts) {
-        double idf = std::log10(doc_infos.size() / index.index.find(index.items[t])->second.size());
+        double idf = std::log10(N / index.index.find(index.items[t])->second.size());
         double tfidf = std::log(1 + tf) * idf;
         norm += tfidf * tfidf;
         ret.push_back({t, tfidf});

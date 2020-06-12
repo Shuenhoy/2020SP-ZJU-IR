@@ -88,7 +88,7 @@ int main() {
             std::cin >> K;
             std::getline(std::cin, query);
             std::vector<std::string_view> tokens = ir::common::tokenize(query);
-            ir::common::vec::Vec query_vec = ir::common::vec::vec_of_tokens(tokens, index, dict, doc_infos);
+            ir::common::vec::Vec query_vec = ir::common::vec::vec_of_tokens(tokens, index, dict, doc_infos.size());
             result = ir::ir::topk(query_vec, K, leadfollow, index, doc_infos);
         }
         std::chrono::steady_clock::time_point end_time = std::chrono::steady_clock::now();

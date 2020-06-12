@@ -52,6 +52,8 @@ index_merge(const std::vector<size_t> &origin, const std::vector<size_t> &part, 
         return IndexOp<size_t>::index_union(origin, IndexOp<size_t>::index_difference(all, part));
     case 3:
         return IndexOp<size_t>::index_difference(origin, part);
+    default:
+        throw std::runtime_error("unreachable!");
     }
 }
 

@@ -18,9 +18,10 @@ requires Serializable<K> &&Hashable<K> &&Serializable<V> &&Serializable<Extra> s
     void serialize(std::ofstream &fout) {
         Serialization<size_t>::serialize(fout, items.size());
         for (auto iter : items) {
-            Serialization<K>::serialize(fout, iter->first);
-            Serialization<size_t>::serialize(fout, iter->second.size());
-            for (auto &&vs : iter->second) {
+            Serialization<K>::serialize(fout, iter);
+            auto xs = index[iter];
+            Serialization<size_t>::serialize(fout, xs.size());
+            for (auto &&vs : xs) {
                 Serialization<V>::serialize(fout, vs);
             }
         }
