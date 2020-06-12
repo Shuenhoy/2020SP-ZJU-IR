@@ -25,39 +25,45 @@ void print_result(std::vector<size_t> docids, size_t total_doc_nums, double dura
     printf("\nin %.2lf seconds.\n", duration);
 }
 
-int main() {
-    size_t k;         // K-Gram 中的 k 值
-    double threshold; // K-Gram 拼写矫正阈值
+int main(int argc, char *argv[]) {
+    if (argc != 4) {
+        std::cerr << "usage: ir <index dir> <kgram> <similarity-threshold>" << std::endl;
+        return -1;
+    }
+    std::string index_dir = argv[1];
+    size_t k = std::atol(argv[2]);         // K-Gram 中的 k 值
+    double threshold = std::atof(argv[3]); // K-Gram 拼写矫正阈值
+
     std::string prompt = "Select your search mode: 1) boolean. 2) topk.\nInput quit to exit the program.";
 
     /* 读取文档倒排索引、文档词典、文档信息，KGram 索引和 KGram 词典，LeadFollow 索引 */
     log("Loading index from disk...");
-    std::ifstream dict_ifs("");
-    assert(dict_ifs.good());
-    std::ifstream index_ifs("");
-    assert(index_ifs.good());
-    std::ifstream docinfos_ifs("");
-    assert(docinfos_ifs.good());
-    std::ifstream kgramdict_ifs("");
-    assert(kgramdict_ifs.good());
-    std::ifstream kgramindex_ifs("");
-    assert(kgramdict_ifs.good());
-    std::ifstream leadfollow_ifs("");
-    assert(leadfollow_ifs.good());
+    std::ifstream fin;
 
-    ir::common::Dictionary dict = ir::common::Serialization<ir::common::Dictionary>::deserialize(dict_ifs);
-    ir::common::DocInvIndex index = ir::common::DocInvIndex::deserialize(index_ifs);
-    ir::common::DocumentInfos doc_infos = ir::common::Serialization<ir::common::DocumentInfos>::deserialize(docinfos_ifs);
-    ir::common::Dictionary kgram_dict = ir::common::Serialization<ir::common::Dictionary>::deserialize(kgramdict_ifs);
-    ir::common::KGramInvIndex kgram_index = ir::common::KGramInvIndex::deserialize(kgramindex_ifs);
-    ir::common::LeadFollowInvIndex leadfollow = ir::common::LeadFollowInvIndex::deserialize(leadfollow_ifs);
+    fin.open(index_dir + "/doc.index");
+    auto doc_index = ir::common::DocInvIndex::deserialize(fin);
+    fin.close();
 
-    dict_ifs.close();
-    index_ifs.close();
-    docinfos_ifs.close();
-    kgramdict_ifs.close();
-    kgramindex_ifs.close();
-    leadfollow_ifs.close();
+    fin.open(index_dir + "/doc.dict");
+    auto doc_dict = ir::common::Serialization<ir::common::Dictionary>::deserialize(fin);
+    fin.close();
+
+    fin.open(index_dir + "/doc.infos");
+    auto doc_infos = ir::common::Serialization<ir::common::DocumentInfos>::deserialize(fin);
+    fin.close();
+
+    fin.open(index_dir + "/kgram.index");
+    auto kgram_index = ir::common::KGramInvIndex::deserialize(fin);
+    fin.close();
+
+    fin.open(index_dir + "/kgram.dict");
+    auto kgram_dict = ir::common::Serialization<ir::common::Dictionary>::deserialize(fin);
+    fin.close();
+
+    fin.open(index_dir + "/lead_follow.index");
+    auto leadfollow = ir::common::LeadFollowInvIndex::deserialize(fin);
+    fin.close();
+
     log("Done.");
 
     /* 文档 ID 全集，用于布尔取反 */
@@ -77,21 +83,21 @@ int main() {
             break;
         }
 
-        std::chrono::steady_clock::time_point begin_time = std::chrono::steady_clock::now();
+        auto begin_time = std::chrono::steady_clock::now();
         if (mode == "1") {
             std::cout << "Boolean search> ";
             std::getline(std::cin, query);
-            result = ir::ir::bool_eval(query, k, threshold, all, dict, index, kgram_dict, kgram_index);
+            result = ir::ir::bool_eval(query, k, threshold, all, doc_dict, doc_index, kgram_dict, kgram_index);
         } else {
             std::cout << "TopK search> ";
             size_t K;
             std::cin >> K;
             std::getline(std::cin, query);
-            std::vector<std::string_view> tokens = ir::common::tokenize(query);
-            ir::common::vec::Vec query_vec = ir::common::vec::vec_of_tokens(tokens, index, dict, doc_infos.size());
-            result = ir::ir::topk(query_vec, K, leadfollow, index, doc_infos);
+            auto tokens = ir::common::tokenize(query);
+            auto query_vec = ir::common::vec::vec_of_tokens(tokens, doc_index, doc_dict, doc_infos.size());
+            result = ir::ir::topk(query_vec, K, leadfollow, doc_index, doc_infos);
         }
-        std::chrono::steady_clock::time_point end_time = std::chrono::steady_clock::now();
+        auto end_time = std::chrono::steady_clock::now();
         double duration = (std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count()) / 1000000.0;
         print_result(result, doc_infos.size(), duration);
     }
