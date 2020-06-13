@@ -92,13 +92,13 @@ int main(int argc, char *argv[]) {
 
     std::ofstream fout(output_dir + "/debug.log");
 
-    common::debug::display(doc_infos, fout);
-    common::debug::display(kgram_dict, kgram, fout);
-    common::debug::display(dict, doc_index, fout);
-    common::debug::display(lead_follow, fout);
+    fout << common::debug::display(doc_infos);
+    fout << common::debug::display(kgram_dict, kgram);
+    fout << common::debug::display(dict, doc_index);
+    fout << common::debug::display(lead_follow);
 
-    common::debug::display(kgram, kgram_dict, dict, fout);
-    common::debug::display(doc_index, dict, fout);
+    fout << common::debug::display(kgram, kgram_dict, dict);
+    fout << common::debug::display(doc_index, dict);
     MEASURE_END(begin_time, end_time);
 
 #endif
