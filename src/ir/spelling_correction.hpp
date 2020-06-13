@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <common/dictionary.hpp>
 #include <common/index.hpp>
 #include "index_op.hpp"
@@ -10,9 +11,22 @@
 namespace ir::ir {
 
 inline double kgram_similarity(std::vector<common::Dictionary::Element>& a, std::vector<common::Dictionary::Element>& b) {
-    double intersec_size = IndexOp<common::Dictionary::Element>::index_intersection(a, b).size();
-    double union_size = IndexOp<common::Dictionary::Element>::index_union(a, b).size();
-    return intersec_size / union_size;
+    std::sort(a.begin(), a.end());
+    std::sort(b.begin(), b.end());
+    size_t i = 0, j = 0;
+    double cnt = 0;
+    while (i < a.size() && j < b.size()) {
+        if (a[i] < b[j]) {
+            i++;
+        } else {
+            if (a[i] == b[j]) {
+                cnt++;
+                i++;
+            }
+            j++;
+        }
+    }
+    return cnt / (static_cast<double>(a.size() + b.size()) - cnt);
 }
 
 /* 基于 K-Gram 重合度的拼写矫正 */
@@ -48,6 +62,7 @@ inline common::Dictionary::Element spelling_correct(std::string_view input,
     }
 
     /* 没有相似度超过阈值的词项，则输出相似度最大的 */
+    std::cout << dict.get(most_similar) << std::endl;
     return most_similar;
 }
 
