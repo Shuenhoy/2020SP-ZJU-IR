@@ -20,7 +20,7 @@ inline std::vector<std::string_view> tokenize(std::string_view input) {
             while (++i < input.size() && is_token(input[i]))
                 ;
             size_t length = i - begin;
-            tokens.push_back(input.substr(i, length));
+            tokens.push_back(input.substr(begin, length));
         }
     }
     return tokens;
