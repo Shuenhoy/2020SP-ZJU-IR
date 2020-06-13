@@ -21,6 +21,17 @@ inline void display(const vec::Vec &vec, const Dictionary &dict, const DocInvInd
     fout << ")";
 }
 
+inline void display(const vec::Vec &vec, const DocInvIndex &index, std::ostream &fout) {
+    fout << "(";
+    for (auto &&[token, value] : vec) {
+        fout << "{";
+        fout << "(" << token << ", " << index.items[token].pos << ", " << index.items[token].len << ")"
+             << ": " << value;
+        fout << "}, ";
+    }
+    fout << ")";
+}
+
 inline void display(const Dictionary::Element &token, const Dictionary &dict, std::ostream &fout) {
     fout << dict.get(token) << "(" << token.pos << "," << token.len << ")";
 }
@@ -39,9 +50,11 @@ inline void display(const Dictionary &dict,
     fout << "[Dictionary Begin]\n";
     fout << "string length: " << dict.dic.size() << "\n";
     fout << "tokens: " << index.items.size() << "\n";
-    for (auto x : index.items) {
+    for (auto i = 0; auto x : index.items) {
+        fout << i << ", ";
         display(x, dict, fout);
         fout << "\n";
+        i++;
     }
     fout << "[Dictionary End]\n";
     fout.flush();
@@ -49,7 +62,8 @@ inline void display(const Dictionary &dict,
 
 inline void display(DocInvIndex &index, const Dictionary &dict, std::ostream &fout) {
     fout << "[DocIndex Begin]\n";
-    for (auto x : index.items) {
+    for (auto i = 0; auto x : index.items) {
+        fout << i << ", ";
         display(x, dict, fout);
         fout << ": [";
         for (auto &&y : index.index.at(x)) {
@@ -58,6 +72,7 @@ inline void display(DocInvIndex &index, const Dictionary &dict, std::ostream &fo
             fout << ", ";
         }
         fout << "]\n";
+        i++;
     }
     fout << "[DocIndex End]\n";
     fout.flush();
@@ -65,7 +80,9 @@ inline void display(DocInvIndex &index, const Dictionary &dict, std::ostream &fo
 
 inline void display(KGramInvIndex &index, const Dictionary &kdict, const Dictionary &dict, std::ostream &fout) {
     fout << "[KGramIndex Begin]\n";
-    for (auto x : index.items) {
+    for (auto i = 0; auto x : index.items) {
+        fout << i << ", ";
+
         display(x, kdict, fout);
         fout << ": [";
         for (auto &&y : index.index.at(x)) {
@@ -74,6 +91,7 @@ inline void display(KGramInvIndex &index, const Dictionary &kdict, const Diction
             fout << ", ";
         }
         fout << "]\n";
+        i++;
     }
     fout << "[KGramIndex End]\n";
     fout.flush();
@@ -81,13 +99,14 @@ inline void display(KGramInvIndex &index, const Dictionary &kdict, const Diction
 
 inline void display(const LeadFollowInvIndex &lead_follow, std::ostream &fout) {
     fout << "[LeadFollow Begin]\n";
-    for (auto x : lead_follow.items) {
-        fout << x << "(" << lead_follow.index.at(x).size() << ")"
+    for (auto i = 0; auto x : lead_follow.items) {
+        fout << i << ", " << x << "(" << lead_follow.index.at(x).size() << ")"
              << ": [";
         for (auto y : lead_follow.index.at(x)) {
             fout << y << ", ";
         }
         fout << "]\n";
+        i++;
     }
     fout << "[LeadFollow End]\n";
     fout.flush();
@@ -96,8 +115,9 @@ inline void display(const LeadFollowInvIndex &lead_follow, std::ostream &fout) {
 inline void display(DocumentInfos &docinfos, std::ostream &fout) {
     fout << "[DocInfos Begin]\n";
 
-    for (auto &&x : docinfos) {
-        fout << x.file_name << " " << x.norm << "\n";
+    for (auto i = 0; auto &&x : docinfos) {
+        fout << i << ", " << x.file_name << " " << x.norm << "\n";
+        i++;
     }
     fout << "[End Begin]\n";
     fout.flush();

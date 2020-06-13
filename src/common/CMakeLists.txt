@@ -14,4 +14,5 @@ add_library(common
                 common_serialization.hpp
                 wildcard_match.hpp
                 debug.hpp
+                cos_dist.hpp
                 dummy.cpp)

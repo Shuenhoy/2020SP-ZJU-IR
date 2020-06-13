@@ -1,5 +1,6 @@
 #pragma once
 
+#include <common/cos_dist.hpp>
 #include <common/doc_inv_index.hpp>
 #include <common/lead_follow_inv_index.hpp>
 #include <common/preprocess.hpp>

@@ -22,7 +22,7 @@ inline Vec vec_of_tokens(const std::vector<std::string_view> &tokens,
     }
     Vec ret;
     for (auto &&[t, tf] : ts) {
-        double idf = std::log10(N / index.index.find(index.items[t])->second.size());
+        double idf = std::log10(static_cast<double>(N) / index.index.find(index.items[t])->second.size());
         double tfidf = std::log(1 + tf) * idf;
         ret.push_back({t, tfidf});
     }
