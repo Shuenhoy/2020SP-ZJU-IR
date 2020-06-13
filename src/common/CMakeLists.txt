@@ -13,4 +13,5 @@ add_library(common
                 vec_of_tokens.hpp
                 common_serialization.hpp
                 wildcard_match.hpp
+                debug.hpp
                 dummy.cpp)

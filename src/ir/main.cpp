@@ -99,13 +99,15 @@ int main(int argc, char *argv[]) {
         auto begin_time = std::chrono::steady_clock::now();
         if (mode == "1") {
             std::cout << "Boolean search> ";
-            std::getline(std::cin, query);
+            while (query.size() == 0)
+                std::getline(std::cin, query);
             result = ir::ir::bool_eval(query, k, threshold, all, doc_dict, doc_index, kgram_dict, kgram_index);
         } else {
             std::cout << "TopK search> ";
             size_t K;
             std::cin >> K;
-            std::getline(std::cin, query);
+            while (query.size() == 0)
+                std::getline(std::cin, query);
             auto tokens = ir::common::tokenize(query);
             auto query_vec = ir::common::vec::vec_of_tokens(tokens, doc_index, doc_dict, doc_infos.size());
             result = ir::ir::topk(query_vec, K, leadfollow, doc_index, doc_infos);
