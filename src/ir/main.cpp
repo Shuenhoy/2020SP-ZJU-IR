@@ -33,14 +33,14 @@ void print_result(std::vector<size_t> docids, ir::common::DocumentInfos doc_info
 
 int main(int argc, char *argv[]) {
     if (argc != 4) {
-        std::cerr << "usage: ir <index dir> <kgram> <similarity-threshold>" << std::endl;
+        std::cerr << "Usage: ir <index dir> <kgram> <similarity-threshold>" << std::endl;
         return -1;
     }
     std::string index_dir = argv[1];
     size_t k = std::atol(argv[2]);         // K-Gram 中的 k 值
     double threshold = std::atof(argv[3]); // K-Gram 拼写矫正阈值
 
-    std::string prompt = "\n== Select your search mode ==\n    [1] boolean. [2] topk.\n[quit] to exit the program> ";
+    std::string prompt = "\n\n======= SEARCH MODE =======\n[1] Boolean. [2] TopK.\n[quit] to exit the program> ";
 
     /* 读取文档倒排索引、文档词典、文档信息，KGram 索引和 KGram 词典，LeadFollow 索引 */
     log("Loading index from disk...");
@@ -104,13 +104,13 @@ int main(int argc, char *argv[]) {
 
         std::chrono::steady_clock::time_point begin_time;
         if (mode == "1") {
-            std::cout << "Boolean search> ";
+            std::cout << "\nBoolean Syntax: [NOT] <query> [<AND|OR> [NOT] <query>]... \n  query := term | \"some phrases\" | term*with*wildcard\n> ";
             while (query.size() == 0)
                 std::getline(std::cin, query);
             begin_time = std::chrono::steady_clock::now();
             result = ir::ir::bool_eval(query, k, threshold, all, doc_dict, doc_index, kgram_dict, kgram_index);
         } else if (mode == "2") {
-            std::cout << "TopK search> ";
+            std::cout << "\nTopK Syntax: <K> <query_line>\n> ";
             size_t K;
             std::cin >> K;
             while (query.size() == 0)
