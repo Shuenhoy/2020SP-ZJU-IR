@@ -21,16 +21,12 @@ inline Vec vec_of_tokens(const std::vector<std::string_view> &tokens,
         ts[std::distance(index.items.begin(), it)]++;
     }
     Vec ret;
-    double norm = 0;
     for (auto &&[t, tf] : ts) {
         double idf = std::log10(N / index.index.find(index.items[t])->second.size());
         double tfidf = std::log(1 + tf) * idf;
-        norm += tfidf * tfidf;
         ret.push_back({t, tfidf});
     }
-    for (auto &&[p, s] : ret) {
-        s /= std::sqrt(norm);
-    }
+
     return ret;
 }
 } // namespace ir::common::vec
