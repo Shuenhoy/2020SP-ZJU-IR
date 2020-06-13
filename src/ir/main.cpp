@@ -52,7 +52,9 @@ int main(int argc, char *argv[]) {
     size_t k = std::atol(argv[2]);         // K-Gram 中的 k 值
     double threshold = std::atof(argv[3]); // K-Gram 拼写矫正阈值
 
-    std::string prompt = "\n\n======= SEARCH MODE =======\n[1] Boolean. [2] TopK.\n[quit] to exit the program> ";
+    std::string prompt = "\n\n======= SEARCH MODE =======\n"\
+                         "[1] Boolean. [2] TopK. [3] Accurate TopK\n"\
+                         "[quit] to exit the program> ";
 
     /* 读取文档倒排索引、文档词典、文档信息，KGram 索引和 KGram 词典，LeadFollow 索引 */
     log("Loading index from disk...");
@@ -121,7 +123,7 @@ int main(int argc, char *argv[]) {
                 std::getline(std::cin, query);
             begin_time = std::chrono::steady_clock::now();
             result = ir::ir::bool_eval(query, k, threshold, all, doc_dict, doc_index, kgram_dict, kgram_index);
-        } else if (mode == "2") {
+        } else if (mode == "2" || mode == "3") {
             std::cout << "\nTopK Syntax: <K> <query_line>\n> ";
             size_t K;
             std::cin >> K;
@@ -141,7 +143,10 @@ int main(int argc, char *argv[]) {
                 );
             }
             auto query_vec = ir::common::vec::vec_of_tokens(uc_tokens, doc_index, doc_dict, doc_infos.size());
-            result = ir::ir::topk(query_vec, K, leadfollow, doc_index, doc_infos);
+            if (mode == "2")
+                result = ir::ir::topk(query_vec, K, leadfollow, doc_index, doc_infos);
+            else
+                result = ir::ir::acc_topk(query_vec, K, doc_index, doc_infos);
         } else {
             std::cout << "Mode error. Try again." << std::endl;
             continue;
