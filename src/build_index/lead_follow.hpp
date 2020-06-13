@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 #include <random>
 
 namespace ir::build_index {
@@ -34,13 +35,14 @@ inline common::LeadFollowInvIndex build_lead_follow(
     for (auto i = 0; i < docinfos.size(); i++) {
         std::vector<std::pair<double, size_t>> dis;
         for (auto j = 0; j < index.items.size(); j++) {
-            dis.push_back({common::cos_dist(vecs[j], i, doc_index, docinfos), j});
+            dis.push_back({common::cos_dist(vecs[j], i, doc_index, docinfos), index.items[j]});
         }
         std::sort(dis.begin(), dis.end());
         for (auto j = 0; j < 3; j++) {
             index.index[dis[j].second].push_back(i);
         }
     }
+
     return index;
 }
 
