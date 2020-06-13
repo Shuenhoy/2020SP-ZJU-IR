@@ -39,7 +39,7 @@ inline common::LeadFollowInvIndex build_lead_follow(
             dis.push_back({common::cos_dist(vecs[j], i, doc_index, docinfos), index.items[j]});
         }
         std::sort(dis.begin(), dis.end());
-        for (auto j = 0; j < 3; j++) {
+        for (auto j = 0; j < 10; j++) {
             index.index[dis[j].second].push_back(i);
         }
     }
