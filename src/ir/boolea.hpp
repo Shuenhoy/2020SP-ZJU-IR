@@ -76,23 +76,26 @@ inline std::vector<size_t> bool_eval(const std::string &input,
     bool AND = false;
     for (size_t i = 0; i < tokens.size();) {
         /* 遇到与、或、非时改变状态，并跳过 */
-        if (is_op("NOT", tokens[i++])) {
+        if (is_op("NOT", tokens[i])) {
+            i++;
             INV = true;
-        } else if (is_op("AND", tokens[i++])) {
+        } else if (is_op("AND", tokens[i])) {
+            i++;
             AND = true;
-            if (is_op("NOT", tokens[i++]))
+            if (is_op("NOT", tokens[i])) {
+                i++;
                 INV = true;
-            else {
+            } else {
                 INV = false;
-                i--;
             }
-        } else if (is_op("OR", tokens[i++])) {
+        } else if (is_op("OR", tokens[i])) {
+            i++;
             AND = false;
-            if (is_op("NOT", tokens[i++]))
+            if (is_op("NOT", tokens[i])) {
+                i++;
                 INV = true;
-            else {
+            } else {
                 INV = false;
-                i--;
             }
         }
 
