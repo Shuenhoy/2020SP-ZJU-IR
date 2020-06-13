@@ -60,14 +60,15 @@ int main(int argc, char *argv[]) {
         common::Serialization<common::DocumentInfos>::serialize(fout, doc_infos);
     }
     std::cout << "done." << std::endl;
-#ifdef DEBUG
+#ifndef NDEBUG
     std::ofstream fout(output_dir + "/debug.log");
 
     common::debug::display(doc_infos, fout);
     common::debug::display(kgram_dict, kgram, fout);
-    common::debug::display(kgram, kgram_dict, fout);
-    common::debug::display(lead_follow, fout);
     common::debug::display(dict, doc_index, fout);
+    common::debug::display(lead_follow, fout);
+
+    common::debug::display(kgram, kgram_dict, dict, fout);
     common::debug::display(doc_index, dict, fout);
 #endif
 

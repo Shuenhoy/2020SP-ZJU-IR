@@ -11,7 +11,7 @@
 namespace ir::common::debug {
 
 inline void display(const Dictionary::Element &token, const Dictionary &dict, std::ofstream &fout) {
-    fout << dict.get(token);
+    fout << dict.get(token) << "(" << token.pos << "," << token.len << ")";
 }
 
 inline void display(const DocInvIndexElement &ele, std::ofstream &fout) {
@@ -26,31 +26,46 @@ template <typename T>
 inline void display(const Dictionary &dict,
                     const Index<Dictionary::Element, T> &index, std::ofstream &fout) {
     fout << "[Dictionary Begin]\n";
+    fout << "string length: " << dict.dic.size() << "\n";
+    fout << "tokens: " << index.items.size() << "\n";
     for (auto x : index.items) {
         display(x, dict, fout);
         fout << "\n";
     }
     fout << "[Dictionary End]\n";
+    fout.flush();
 }
 
-template <typename T>
-inline void display(const Index<Dictionary::Element, T> &index, const Dictionary &dict, std::ofstream &fout) {
-    fout << "[Index Begin]\n";
+inline void display(DocInvIndex &index, const Dictionary &dict, std::ofstream &fout) {
+    fout << "[DocIndex Begin]\n";
     for (auto x : index.items) {
         display(x, dict, fout);
         fout << ": [";
         for (auto &&y : index.index.at(x)) {
-            if constexpr (std::is_same_v<T, Dictionary::Element>) {
-                display(y, dict, fout);
 
-            } else {
-                display(y, fout);
-            }
+            display(y, fout);
             fout << ", ";
         }
         fout << "]\n";
     }
-    fout << "[Index End]\n";
+    fout << "[DocIndex End]\n";
+    fout.flush();
+}
+
+inline void display(KGramInvIndex &index, const Dictionary &kdict, const Dictionary &dict, std::ofstream &fout) {
+    fout << "[KGramIndex Begin]\n";
+    for (auto x : index.items) {
+        display(x, kdict, fout);
+        fout << ": [";
+        for (auto &&y : index.index.at(x)) {
+            display(y, dict, fout);
+
+            fout << ", ";
+        }
+        fout << "]\n";
+    }
+    fout << "[KGramIndex End]\n";
+    fout.flush();
 }
 
 inline void display(const LeadFollowInvIndex &lead_follow, std::ofstream &fout) {
@@ -63,6 +78,7 @@ inline void display(const LeadFollowInvIndex &lead_follow, std::ofstream &fout) 
         fout << "]\n";
     }
     fout << "[Index End]\n";
+    fout.flush();
 }
 
 inline void display(DocumentInfos &docinfos, std::ofstream &fout) {
@@ -72,5 +88,6 @@ inline void display(DocumentInfos &docinfos, std::ofstream &fout) {
         fout << x.file_name << " " << x.norm << "\n";
     }
     fout << "[End Begin]\n";
+    fout.flush();
 }
 } // namespace ir::common::debug
