@@ -101,14 +101,14 @@ inline std::vector<size_t> bool_eval(const std::string &input,
 
         /* 不可能连续遇到两个布尔运算符，因此此时应是单个单词、短语或带有通配符的单个单词 */
         if (is_phrase_begin(tokens[i])) { // 短语
-            /* 将前后双引号去除 */
-            std::vector<std::string_view> phrase(1, tokens[i].substr(1, tokens[i].size() - 1));
+            /* 将前后双引号去除并归一化 */
+            std::vector<std::string_view> phrase(1, common::unify_token(tokens[i].substr(1, tokens[i].size() - 1)));
             i++;
             while (!is_phrase_end(tokens[i])) {
-                phrase.push_back(tokens[i]);
+                phrase.push_back(common::unify_token(tokens[i]));
                 i++;
             }
-            phrase.push_back(tokens[i].substr(0, tokens[i].size() - 1));
+            phrase.push_back(common::unify_token(tokens[i].substr(0, tokens[i].size() - 1)));
             i++;
 
             /* 对短语中每个单词对应的文档 ID 取交集（带位置信息） */
@@ -124,13 +124,13 @@ inline std::vector<size_t> bool_eval(const std::string &input,
             /* 融合到结果中 */
             ret = index_merge(ret, remove_position(ph_inv_idx), INV, AND, all);
         } else if (is_wildcard(tokens[i])) { // 通配符
-            auto token_ds = wildcard(tokens[i], k, dict, kgram_dict, kgram_index);
+            auto token_ds = wildcard(common::unify_token(tokens[i]), k, dict, kgram_dict, kgram_index);
             for (auto token_d : token_ds) {
                 ret = index_merge(ret, remove_position(index.index.at(token_d)), INV, AND, all);
             }
             i++;
         } else { // 单个词项
-            auto token_d = spelling_correct(tokens[i], k, threshold, dict, kgram_dict, kgram_index);
+            auto token_d = spelling_correct(common::unify_token(tokens[i]), k, threshold, dict, kgram_dict, kgram_index);
             ret = index_merge(ret, remove_position(index.index.at(token_d)), INV, AND, all);
             i++;
         }
