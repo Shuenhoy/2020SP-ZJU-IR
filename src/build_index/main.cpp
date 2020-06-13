@@ -89,16 +89,36 @@ int main(int argc, char *argv[]) {
 #ifndef NDEBUG
     MEASURE_BGN(begin_time, end_time);
     std::cout << "writing debug logs" << std::endl;
+    {
+        std::ofstream fout(output_dir + "/debug_doc_infos.log");
+        fout << common::debug::display(doc_infos);
+    }
+    {
+        std::ofstream fout(output_dir + "/debug_kgram_dict.log");
 
-    std::ofstream fout(output_dir + "/debug.log");
+        fout << common::debug::display(kgram_dict, kgram);
+    }
+    {
+        std::ofstream fout(output_dir + "/debug_dict.log");
 
-    fout << common::debug::display(doc_infos);
-    fout << common::debug::display(kgram_dict, kgram);
-    fout << common::debug::display(dict, doc_index);
-    fout << common::debug::display(lead_follow);
+        fout << common::debug::display(dict, doc_index);
+    }
+    {
+        std::ofstream fout(output_dir + "/debug_lead_follow.log");
 
-    fout << common::debug::display(kgram, kgram_dict, dict);
-    fout << common::debug::display(doc_index, dict);
+        fout << common::debug::display(lead_follow);
+    }
+    {
+        std::ofstream fout(output_dir + "/debug_kgram_dict.log");
+
+        fout << common::debug::display(kgram, kgram_dict, dict);
+    }
+    {
+        std::ofstream fout(output_dir + "/debug_doc_index.log");
+
+        fout << common::debug::display(doc_index, dict);
+    }
+
     MEASURE_END(begin_time, end_time);
 
 #endif
