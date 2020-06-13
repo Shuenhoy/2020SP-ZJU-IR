@@ -62,7 +62,6 @@ inline common::Dictionary::Element spelling_correct(std::string_view input,
     }
 
     /* 没有相似度超过阈值的词项，则输出相似度最大的 */
-    std::cout << dict.get(most_similar) << std::endl;
     return most_similar;
 }
 
