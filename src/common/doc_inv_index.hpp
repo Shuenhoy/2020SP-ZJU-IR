@@ -29,6 +29,7 @@ struct Serialization<DocInvIndexElement> {
     }
     static DocInvIndexElement deserialize(std::ifstream &fin) {
         DocInvIndexElement ret;
+        ret.doc_id = Serialization<size_t>::deserialize(fin);
         ret.positions = Serialization<std::vector<size_t>>::deserialize(fin);
 
         return ret;
