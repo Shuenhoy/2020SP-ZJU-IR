@@ -29,9 +29,9 @@ void print_result(std::vector<size_t> docids, ir::common::DocumentInfos doc_info
         return;
     }
     printf(">>> %d results from %d documents:\n", docids.size(), doc_infos.size());
-    printf("\n%8s %8s %30s\n", "Rank", "Doc ID", "File path");
+    printf("\n%8s %35s\n", "Rank", "Doc ID", "File Path");
     for (size_t i = 0; i < docids.size(); i++) {
-        printf("%8d %8d %30s\n", i + 1, docids[i], doc_infos[docids[i]].file_name.c_str());
+        printf("%8d %35s\n", i + 1, doc_infos[docids[i]].file_name.c_str());
     }
     printf("\nin %.4lf seconds.\n", duration);
 }
