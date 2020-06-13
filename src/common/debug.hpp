@@ -39,8 +39,13 @@ inline void display(const Index<Dictionary::Element, T> &index, const Dictionary
     for (auto x : index.items) {
         display(x, dict, fout);
         fout << ": [";
-        for (auto &&y : index.index[x]) {
-            display(y, fout);
+        for (auto &&y : index.index.at(x)) {
+            if constexpr (std::is_same_v<T, Dictionary::Element>) {
+                display(y, dict, fout);
+
+            } else {
+                display(y, fout);
+            }
             fout << ", ";
         }
         fout << "]\n";
@@ -48,12 +53,11 @@ inline void display(const Index<Dictionary::Element, T> &index, const Dictionary
     fout << "[Index End]\n";
 }
 
-template <typename T>
-inline void display(LeadFollowInvIndex &lead_follow, std::ofstream &fout) {
+inline void display(const LeadFollowInvIndex &lead_follow, std::ofstream &fout) {
     fout << "[Index Begin]\n";
     for (auto x : lead_follow.items) {
         fout << x << ": [";
-        for (auto y : lead_follow.index[x]) {
+        for (auto y : lead_follow.index.at(x)) {
             fout << y << ", ";
         }
         fout << "]\n";
