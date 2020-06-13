@@ -22,7 +22,7 @@ void print_result(std::vector<size_t> docids, size_t total_doc_nums, double dura
     for (size_t i = 0; i < docids.size(); i++) {
         printf("%8d %15d\n", i + 1, docids[i]);
     }
-    printf("\nin %.2lf seconds.\n", duration);
+    printf("\nin %.4lf seconds.\n", duration);
 }
 
 int main(int argc, char *argv[]) {
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     size_t k = std::atol(argv[2]);         // K-Gram 中的 k 值
     double threshold = std::atof(argv[3]); // K-Gram 拼写矫正阈值
 
-    std::string prompt = "Select your search mode: 1) boolean. 2) topk.\nInput quit to exit the program.";
+    std::string prompt = "\n== Select your search mode: [1] boolean. [2] topk. Input [quit] to exit the program. ==";
 
     /* 读取文档倒排索引、文档词典、文档信息，KGram 索引和 KGram 词典，LeadFollow 索引 */
     log("Loading index from disk...");
@@ -96,11 +96,12 @@ int main(int argc, char *argv[]) {
             break;
         }
 
-        auto begin_time = std::chrono::steady_clock::now();
+        std::chrono::steady_clock::time_point begin_time;
         if (mode == "1") {
             std::cout << "Boolean search> ";
             while (query.size() == 0)
                 std::getline(std::cin, query);
+            begin_time = std::chrono::steady_clock::now();
             result = ir::ir::bool_eval(query, k, threshold, all, doc_dict, doc_index, kgram_dict, kgram_index);
         } else {
             std::cout << "TopK search> ";
@@ -108,6 +109,7 @@ int main(int argc, char *argv[]) {
             std::cin >> K;
             while (query.size() == 0)
                 std::getline(std::cin, query);
+            begin_time = std::chrono::steady_clock::now();
             auto tokens = ir::common::tokenize(query);
             auto query_vec = ir::common::vec::vec_of_tokens(tokens, doc_index, doc_dict, doc_infos.size());
             result = ir::ir::topk(query_vec, K, leadfollow, doc_index, doc_infos);

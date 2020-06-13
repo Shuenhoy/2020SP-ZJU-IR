@@ -105,9 +105,11 @@ inline std::vector<size_t> bool_eval(const std::string &input,
             std::vector<std::string_view> phrase(1, tokens[i].substr(1, tokens[i].size() - 1));
             i++;
             while (!is_phrase_end(tokens[i])) {
-                phrase.push_back(tokens[i++]);
+                phrase.push_back(tokens[i]);
+                i++;
             }
-            phrase.push_back(tokens[i].substr(0, tokens[i++].size() - 1));
+            phrase.push_back(tokens[i].substr(0, tokens[i].size() - 1));
+            i++;
 
             /* 对短语中每个单词对应的文档 ID 取交集（带位置信息） */
             auto token_d = spelling_correct(phrase[0], k, threshold, dict, kgram_dict, kgram_index);
@@ -126,9 +128,11 @@ inline std::vector<size_t> bool_eval(const std::string &input,
             for (auto token_d : token_ds) {
                 ret = index_merge(ret, remove_position(index.index.at(token_d)), INV, AND, all);
             }
+            i++;
         } else { // 单个词项
             auto token_d = spelling_correct(tokens[i], k, threshold, dict, kgram_dict, kgram_index);
             ret = index_merge(ret, remove_position(index.index.at(token_d)), INV, AND, all);
+            i++;
         }
     }
 
