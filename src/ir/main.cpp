@@ -16,11 +16,11 @@ inline void log(std::string s) {
     std::cout << "[LOG] " << s << std::endl;
 }
 
-void print_result(std::vector<size_t> docids, size_t total_doc_nums, double duration) {
-    printf(">>> %d results from %d documents:\n", docids.size(), total_doc_nums);
-    printf("\n%8s %15s\n", "Rank", "Document ID");
+void print_result(std::vector<size_t> docids, ir::common::DocumentInfos doc_infos, double duration) {
+    printf(">>> %d results from %d documents:\n", docids.size(), doc_infos.size());
+    printf("\n%8s %8s %30s\n", "Rank", "Doc ID", "File path");
     for (size_t i = 0; i < docids.size(); i++) {
-        printf("%8d %15d\n", i + 1, docids[i]);
+        printf("%8d %8d %30s\n", i + 1, docids[i], doc_infos[docids[i]].file_name.c_str());
     }
     printf("\nin %.4lf seconds.\n", duration);
 }
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
         }
         auto end_time = std::chrono::steady_clock::now();
         double duration = (std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count()) / 1000000.0;
-        print_result(result, doc_infos.size(), duration);
+        print_result(result, doc_infos, duration);
     }
 
     return 0;
