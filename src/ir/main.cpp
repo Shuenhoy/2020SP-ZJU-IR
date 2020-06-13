@@ -8,6 +8,7 @@
 #include "boolea.hpp"
 #include "index_op.hpp"
 #include "phrase.hpp"
+#include "spelling_correction.hpp"
 #include "topk.hpp"
 #include "wildcard.hpp"
 
@@ -126,9 +127,20 @@ int main(int argc, char *argv[]) {
             std::cin >> K;
             while (query.size() == 0)
                 std::getline(std::cin, query);
+
             begin_time = std::chrono::steady_clock::now();
             auto tokens = ir::common::tokenize(query, false);
-            auto query_vec = ir::common::vec::vec_of_tokens(tokens, doc_index, doc_dict, doc_infos.size());
+            std::vector<std::string_view> uc_tokens;  // unified and corrected tokens
+            for (auto &token : tokens) {
+                uc_tokens.push_back(
+                    doc_dict.get(
+                        ir::ir::spelling_correct(
+                            ir::common::unify_token(token), k, threshold, doc_dict, kgram_dict, kgram_index
+                        )
+                    )
+                );
+            }
+            auto query_vec = ir::common::vec::vec_of_tokens(uc_tokens, doc_index, doc_dict, doc_infos.size());
             result = ir::ir::topk(query_vec, K, leadfollow, doc_index, doc_infos);
         } else {
             std::cout << "Mode error. Try again." << std::endl;
