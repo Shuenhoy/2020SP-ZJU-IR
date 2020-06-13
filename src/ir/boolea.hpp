@@ -125,9 +125,11 @@ inline std::vector<size_t> bool_eval(const std::string &input,
             ret = index_merge(ret, remove_position(ph_inv_idx), INV, AND, all);
         } else if (is_wildcard(tokens[i])) { // 通配符
             auto token_ds = wildcard(common::unify_token(tokens[i]), k, dict, kgram_dict, kgram_index);
+            std::vector<size_t> wild;
             for (auto token_d : token_ds) {
-                ret = index_merge(ret, remove_position(index.index.at(token_d)), INV, AND, all);
+                wild = index_merge(wild, remove_position(index.index.at(token_d)), false, false, all);
             }
+            ret = index_merge(ret, wild, INV, AND, all);
             i++;
         } else { // 单个词项
             auto token_d = spelling_correct(common::unify_token(tokens[i]), k, threshold, dict, kgram_dict, kgram_index);
