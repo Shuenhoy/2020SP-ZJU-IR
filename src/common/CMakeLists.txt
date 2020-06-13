@@ -16,3 +16,5 @@ add_library(common
                 debug.hpp
                 cos_dist.hpp
                 dummy.cpp)
+
+target_link_libraries(common spdlog::spdlog)

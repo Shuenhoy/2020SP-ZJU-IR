@@ -7,3 +7,4 @@ add_executable(ir
     wildcard.hpp
     spelling_correction.hpp
 )
+target_link_libraries(ir spdlog::spdlog)
