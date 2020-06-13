@@ -6,7 +6,6 @@
 
 namespace ir::common {
 double cos_dist(const vec::Vec &query, size_t doc, const DocInvIndex &index, const DocumentInfos &doc_infos) {
-    std::cerr << std::endl;
 
     double ans = 0.0;
     double norm = 0.0;
