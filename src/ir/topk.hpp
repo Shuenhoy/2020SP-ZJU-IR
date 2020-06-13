@@ -7,6 +7,7 @@
 
 #include <queue>
 
+#include <spdlog/spdlog.h>
 #include <vector>
 
 namespace ir::ir {
@@ -18,18 +19,26 @@ std::vector<size_t> topk(const common::vec::Vec &query, size_t K,
                          const common::DocumentInfos &docinfos) {
     std::vector<size_t> ret;
     std::priority_queue<std::pair<double, size_t>> leader_pq;
+    spdlog::debug("comparing with leaders");
+
     for (size_t leader : lead_follow.items) {
         leader_pq.push({common::cos_dist(query, leader, doc_inv, docinfos), leader});
     }
+
     while (ret.size() < K && !leader_pq.empty()) {
         size_t leader = leader_pq.top().second;
         leader_pq.pop();
         std::priority_queue<std::pair<double, size_t>> follower_pq;
+        spdlog::debug("comparing with leader {}'s followers", leader);
+
         for (size_t follower : lead_follow.index.at(leader)) {
+            spdlog::debug("comparing with follower {}", follower);
+
             follower_pq.push({common::cos_dist(query, follower, doc_inv, docinfos), follower});
         }
         while (ret.size() < K && !follower_pq.empty()) {
-            ret.push_back(follower_pq.top().second);
+            if (follower_pq.top().first > 0.0001)
+                ret.push_back(follower_pq.top().second);
             follower_pq.pop();
         }
     }
