@@ -30,7 +30,7 @@ inline void display(const Dictionary &dict,
         display(x, dict, fout);
         fout << "\n";
     }
-    fout << "[Dictionary End]\n"
+    fout << "[Dictionary End]\n";
 }
 
 template <typename T>
@@ -45,20 +45,20 @@ inline void display(const Index<Dictionary::Element, T> &index, const Dictionary
         }
         fout << "]\n";
     }
-    fout << "[Index End]\n"
+    fout << "[Index End]\n";
 }
 
 template <typename T>
 inline void display(LeadFollowInvIndex &lead_follow, std::ofstream &fout) {
     fout << "[Index Begin]\n";
-    for (auto x : index.items) {
+    for (auto x : lead_follow.items) {
         fout << x << ": [";
-        for (auto y : index.index[x]) {
+        for (auto y : lead_follow.index[x]) {
             fout << y << ", ";
         }
         fout << "]\n";
     }
-    fout << "[Index End]\n"
+    fout << "[Index End]\n";
 }
 
 inline void display(DocumentInfos &docinfos, std::ofstream &fout) {
