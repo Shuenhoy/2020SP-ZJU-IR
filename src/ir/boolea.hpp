@@ -102,7 +102,7 @@ inline std::vector<size_t> bool_eval(const std::string &input,
         /* 不可能连续遇到两个布尔运算符，因此此时应是单个单词、短语或带有通配符的单个单词 */
         if (is_phrase_begin(tokens[i])) { // 短语
             /* 将前后双引号去除并归一化 */
-            std::vector<std::string_view> phrase(1, common::unify_token(tokens[i].substr(1, tokens[i].size() - 1)));
+            std::vector<std::string> phrase(1, common::unify_token(tokens[i].substr(1, tokens[i].size() - 1)));
             i++;
             while (!is_phrase_end(tokens[i])) {
                 phrase.push_back(common::unify_token(tokens[i]));
