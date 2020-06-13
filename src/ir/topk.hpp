@@ -6,6 +6,7 @@
 #include <common/vec.hpp>
 
 #include <queue>
+#include <unordered_set>
 
 #include <spdlog/spdlog.h>
 #include <vector>
@@ -17,7 +18,7 @@ std::vector<size_t> topk(const common::vec::Vec &query, size_t K,
                          const common::LeadFollowInvIndex &lead_follow,
                          const common::DocInvIndex &doc_inv,
                          const common::DocumentInfos &doc_infos) {
-    std::vector<size_t> ret;
+    std::unordered_set<size_t> docs;
     std::priority_queue<std::pair<double, size_t>> leader_pq;
     spdlog::debug("comparing with leaders");
 
@@ -25,7 +26,7 @@ std::vector<size_t> topk(const common::vec::Vec &query, size_t K,
         leader_pq.push({common::cos_dist(query, leader, doc_inv, doc_infos), leader});
     }
 
-    while (ret.size() < K && !leader_pq.empty()) {
+    while (docs.size() < K && !leader_pq.empty()) {
         size_t leader = leader_pq.top().second;
         leader_pq.pop();
         std::priority_queue<std::pair<double, size_t>> follower_pq;
@@ -36,12 +37,15 @@ std::vector<size_t> topk(const common::vec::Vec &query, size_t K,
 
             follower_pq.push({common::cos_dist(query, follower, doc_inv, doc_infos), follower});
         }
-        while (ret.size() < K && !follower_pq.empty()) {
+        while (docs.size() < K && !follower_pq.empty()) {
             if (follower_pq.top().first > 0.0001)
-                ret.push_back(follower_pq.top().second);
+                docs.insert(follower_pq.top().second);
             follower_pq.pop();
         }
     }
+
+    std::vector<size_t> ret;
+    ret.insert(ret.end(), docs.begin(), docs.end());
     return ret;
 }
 
