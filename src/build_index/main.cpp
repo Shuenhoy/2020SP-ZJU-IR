@@ -19,16 +19,16 @@ int main(int argc, char *argv[]) {
         std::cerr << "usage: build_index <input dir> <output dir> <kgram>" << std::endl;
         return -1;
     }
-    auto input_dir = std::filesystem::directory_iterator(argv[1]);
+
     std::string output_dir = argv[2];
 
     size_t k = std::atol(argv[3]);
     std::cout << "building inv doc index" << std::endl;
-    auto [raw, N] = build_index::build_raw(input_dir);
+    auto [raw, N] = build_index::build_raw(std::filesystem::directory_iterator(argv[1]));
     auto [doc_index, dict] = build_index::raw_to_fi(raw);
     std::cout << "building doc infos" << std::endl;
 
-    auto doc_infos = build_index::build_doc_infos(input_dir, dict, doc_index, N);
+    auto doc_infos = build_index::build_doc_infos(std::filesystem::directory_iterator(argv[1]), dict, doc_index, N);
     auto [kgram, kgram_dict] = build_index::raw_to_fi(build_index::build_kgram(dict, doc_index, k));
     std::cout << "building lead follow index" << std::endl;
 

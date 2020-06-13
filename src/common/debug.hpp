@@ -69,7 +69,7 @@ inline void display(KGramInvIndex &index, const Dictionary &kdict, const Diction
 }
 
 inline void display(const LeadFollowInvIndex &lead_follow, std::ofstream &fout) {
-    fout << "[Index Begin]\n";
+    fout << "[LeadFollow Begin]\n";
     for (auto x : lead_follow.items) {
         fout << x << ": [";
         for (auto y : lead_follow.index.at(x)) {
@@ -77,7 +77,7 @@ inline void display(const LeadFollowInvIndex &lead_follow, std::ofstream &fout) 
         }
         fout << "]\n";
     }
-    fout << "[Index End]\n";
+    fout << "[LeadFollow End]\n";
     fout.flush();
 }
 

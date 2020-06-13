@@ -11,6 +11,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 
 namespace ir::build_index {
 
@@ -41,7 +42,9 @@ inline std::pair<Raw<common::DocInvIndexElement>, size_t> build_raw(std::filesys
             } else {
                 iter->positions.push_back(pos);
             }
+            pos++;
         }
+        docId++;
     }
     return {std::move(raw), N};
 }

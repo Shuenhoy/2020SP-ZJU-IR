@@ -16,7 +16,7 @@ inline common::DocumentInfos build_doc_infos(std::filesystem::directory_iterator
                                              const common::DocInvIndex &doc_index,
                                              size_t N) {
     common::DocumentInfos ret;
-    for (auto docId = 0; auto &p : dir) {
+    for (auto &p : dir) {
         std::ifstream fin(p.path().c_str());
         auto input = common::read_file(fin);
         auto ts = common::tokenize(input);
