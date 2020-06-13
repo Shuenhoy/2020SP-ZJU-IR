@@ -19,7 +19,7 @@ inline std::vector<Dictionary::Element> kgram(std::string_view token, size_t k,
                                               const KGramInvIndex &kgram_index) {
     std::vector<Dictionary::Element> ret;
     int i;
-    for (i = 0; i + k < token.size(); i) {
+    for (i = 0; i + k < token.size(); i++) {
         auto x = find_in_dict<Dictionary::Element>(
             token.substr(i, k), kgram_dict, kgram_index);
         assert(x != kgram_index.items.end());
