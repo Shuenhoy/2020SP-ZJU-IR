@@ -59,6 +59,8 @@ std::vector<size_t> acc_topk(const common::vec::Vec &query, size_t K,
         pq.push({common::cos_dist(query, doc_id, doc_inv, doc_infos), doc_id});
     }
     for (size_t i = 0; i < K; i++) {
+        if (pq.top().first < 0.0001)
+            break;
         ret.push_back(pq.top().second);
         pq.pop();
     }
