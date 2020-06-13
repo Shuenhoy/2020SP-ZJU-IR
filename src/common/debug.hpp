@@ -9,6 +9,8 @@
 
 #include <fstream>
 
+#include <spdlog/fmt/ostr.h>
+
 namespace ir::common::debug {
 template <typename U>
 struct Display {
