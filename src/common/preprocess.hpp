@@ -7,17 +7,17 @@
 
 namespace ir::common {
 
-inline bool is_token(const char& c) {
-    return std::isalnum(c) || c == '_' || c == '-';
+inline bool is_token(const char& c, bool is_query) {
+    return std::isalnum(c) || c == '_' || c == '-' || is_query && c == '*' || is_query && c == '"';
 }
 
 /* 将字符串变成词项，目前仅仅保留了字母、数字、下划线与连词符，其他符号全部去除 */
-inline std::vector<std::string_view> tokenize(std::string_view input) {
+inline std::vector<std::string_view> tokenize(std::string_view input, bool is_query) {
     std::vector<std::string_view> tokens;
     for (size_t i = 0; i < input.size(); i++) {
-        if (is_token(input[i])) {
+        if (is_token(input[i], is_query)) {
             size_t begin = i;
-            while (++i < input.size() && is_token(input[i]))
+            while (++i < input.size() && is_token(input[i], is_query))
                 ;
             size_t length = i - begin;
             tokens.push_back(input.substr(begin, length));

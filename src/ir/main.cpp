@@ -17,6 +17,12 @@ inline void log(std::string s) {
 }
 
 void print_result(std::vector<size_t> docids, ir::common::DocumentInfos doc_infos, double duration) {
+    /* TODO: 输出匹配部分摘要 */
+    if (docids.size() == 0) {
+        std::cout << "No result from " << doc_infos.size() << " documents";
+        printf(" in %.4lf seconds.\n", duration);
+        return;
+    }
     printf(">>> %d results from %d documents:\n", docids.size(), doc_infos.size());
     printf("\n%8s %8s %30s\n", "Rank", "Doc ID", "File path");
     for (size_t i = 0; i < docids.size(); i++) {
@@ -34,7 +40,7 @@ int main(int argc, char *argv[]) {
     size_t k = std::atol(argv[2]);         // K-Gram 中的 k 值
     double threshold = std::atof(argv[3]); // K-Gram 拼写矫正阈值
 
-    std::string prompt = "\n== Select your search mode: [1] boolean. [2] topk. Input [quit] to exit the program. ==";
+    std::string prompt = "\n== Select your search mode ==\n    [1] boolean. [2] topk.\n[quit] to exit the program> ";
 
     /* 读取文档倒排索引、文档词典、文档信息，KGram 索引和 KGram 词典，LeadFollow 索引 */
     log("Loading index from disk...");
@@ -89,7 +95,7 @@ int main(int argc, char *argv[]) {
         std::string mode;
         std::string query;
         std::vector<size_t> result;
-        std::cout << prompt << std::endl;
+        std::cout << prompt;
         std::cin >> mode;
         if (mode[0] == 'q') {
             std::cout << "Bye." << std::endl;
@@ -103,16 +109,19 @@ int main(int argc, char *argv[]) {
                 std::getline(std::cin, query);
             begin_time = std::chrono::steady_clock::now();
             result = ir::ir::bool_eval(query, k, threshold, all, doc_dict, doc_index, kgram_dict, kgram_index);
-        } else {
+        } else if (mode == "2") {
             std::cout << "TopK search> ";
             size_t K;
             std::cin >> K;
             while (query.size() == 0)
                 std::getline(std::cin, query);
             begin_time = std::chrono::steady_clock::now();
-            auto tokens = ir::common::tokenize(query);
+            auto tokens = ir::common::tokenize(query, false);
             auto query_vec = ir::common::vec::vec_of_tokens(tokens, doc_index, doc_dict, doc_infos.size());
             result = ir::ir::topk(query_vec, K, leadfollow, doc_index, doc_infos);
+        } else {
+            std::cout << "Mode error. Try again." << std::endl;
+            continue;
         }
         auto end_time = std::chrono::steady_clock::now();
         double duration = (std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count()) / 1000000.0;

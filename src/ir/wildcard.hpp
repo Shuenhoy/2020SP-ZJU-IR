@@ -20,15 +20,23 @@ inline std::vector<common::Dictionary::Element> wildcard(std::string_view input,
     std::vector<common::Dictionary::Element> kgrams;
     std::vector<common::Dictionary::Element> ret;
 
+    /* 以 * 为分隔符把原字符串分开成多个部分 */
     for (size_t i = 0; i < input.size(); i++) {
         if (input[i] != '*') {
             size_t begin = i;
             while (++i < input.size() && input[i] != '*')
                 ;
             size_t len = i - begin;
-            if (len <= k) {
+            if (len >= k) {  // 长度大于等于 k 的部分可以获得 KGram
                 auto part_kgrams = common::kgram(input.substr(begin, len), k, kgram_dict, kgram_index);
                 kgrams.insert(kgrams.end(), part_kgrams.begin(), part_kgrams.end());
+            } else {  // 长度小于 k 只能和每个 KGram 都尝试匹配一次，符合的则入选
+                std::string wild = "*" + std::string(input.substr(begin, len)) + "*";
+                for (auto kgram : kgram_index.items) {
+                    if (common::wildcard_match(kgram_dict.get(kgram), wild)) {
+                        kgrams.push_back(kgram);
+                    }
+                }
             }
         }
     }

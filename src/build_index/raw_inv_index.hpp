@@ -24,7 +24,7 @@ inline std::pair<Raw<common::DocInvIndexElement>, size_t> build_raw(std::filesys
         std::ifstream fin(p.path().string());
 
         auto input = common::read_file(fin);
-        auto ts = common::tokenize(input);
+        auto ts = common::tokenize(input, false);
         for (auto pos = 0; auto &&token : ts) {
             auto u_token = common::unify_token(token);
             if (!raw.contains(u_token)) {
