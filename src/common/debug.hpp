@@ -82,7 +82,8 @@ inline void display(KGramInvIndex &index, const Dictionary &kdict, const Diction
 inline void display(const LeadFollowInvIndex &lead_follow, std::ostream &fout) {
     fout << "[LeadFollow Begin]\n";
     for (auto x : lead_follow.items) {
-        fout << x << ": [";
+        fout << x << "(" << lead_follow.index.at(x).size() << ")"
+             << ": [";
         for (auto y : lead_follow.index.at(x)) {
             fout << y << ", ";
         }
