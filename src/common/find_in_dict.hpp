@@ -10,8 +10,9 @@ namespace ir::common {
 template <typename T>
 inline auto find_in_dict(std::string_view tofind, const Dictionary &dict,
                          const Index<Dictionary::Element, T> &index) {
-    return common::binary_search(index.items.begin(), index.items.end(), [&](auto &&ele) {
+    auto iter = common::binary_search(index.items.begin(), index.items.end(), [&](auto &&ele) {
         return dict.get(ele).compare(tofind) < 0;
     });
+    return dict.get(*iter).compare(tofind) == 0 ? iter : index.items.end();
 }
 } // namespace ir::common

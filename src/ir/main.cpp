@@ -10,7 +10,11 @@
 #include "phrase.hpp"
 #include "topk.hpp"
 #include "wildcard.hpp"
+
 #include <common/vec_of_tokens.hpp>
+
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/spdlog.h>
 
 inline void log(std::string s) {
     std::cout << "[LOG] " << s << std::endl;
@@ -32,6 +36,13 @@ void print_result(std::vector<size_t> docids, ir::common::DocumentInfos doc_info
 }
 
 int main(int argc, char *argv[]) {
+#ifndef NDEBUG
+    auto file_logger = spdlog::basic_logger_mt("basic_logger", "test/logs.txt");
+    spdlog::set_default_logger(file_logger);
+    spdlog::set_level(spdlog::level::debug);
+
+#endif
+
     if (argc != 4) {
         std::cerr << "Usage: ir <index dir> <kgram> <similarity-threshold>" << std::endl;
         return -1;

@@ -34,7 +34,7 @@ inline std::pair<Raw<common::DocInvIndexElement>, size_t> build_raw(std::filesys
             auto iter = common::binary_search(tk.begin(), tk.end(), [&](auto &&x) {
                 return x.doc_id < docId;
             });
-            if (iter == tk.end()) {
+            if (iter == tk.end() || iter->doc_id != docId) {
                 common::DocInvIndexElement x;
                 x.doc_id = docId;
                 x.positions.push_back(pos);
