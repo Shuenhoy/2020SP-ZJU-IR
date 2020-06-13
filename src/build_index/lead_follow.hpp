@@ -28,7 +28,7 @@ inline common::LeadFollowInvIndex build_lead_follow(
 
         std::ifstream fin(docinfos[id].file_name);
         auto input = common::read_file(fin);
-        auto ts = common::tokenize(input);
+        auto ts = common::tokenize(input, false);
         vecs.push_back(common::vec::vec_of_tokens(ts, doc_index, dict, docinfos.size()));
     }
     for (auto i = 0; i < docinfos.size(); i++) {

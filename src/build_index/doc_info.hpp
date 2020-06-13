@@ -19,7 +19,7 @@ inline common::DocumentInfos build_doc_infos(std::filesystem::directory_iterator
     for (auto &p : dir) {
         std::ifstream fin(p.path().c_str());
         auto input = common::read_file(fin);
-        auto ts = common::tokenize(input);
+        auto ts = common::tokenize(input, false);
         double norm = 0;
 
         auto xs = common::vec::vec_of_tokens(ts, doc_index, dict, N);

@@ -17,6 +17,12 @@ inline void log(std::string s) {
 }
 
 void print_result(std::vector<size_t> docids, ir::common::DocumentInfos doc_infos, double duration) {
+    /* TODO: 输出匹配部分摘要 */
+    if (docids.size() == 0) {
+        std::cout << "No result from " << doc_infos.size() << " documents";
+        printf(" in %.4lf seconds.\n", duration);
+        return;
+    }
     printf(">>> %d results from %d documents:\n", docids.size(), doc_infos.size());
     printf("\n%8s %8s %30s\n", "Rank", "Doc ID", "File path");
     for (size_t i = 0; i < docids.size(); i++) {
@@ -110,7 +116,7 @@ int main(int argc, char *argv[]) {
             while (query.size() == 0)
                 std::getline(std::cin, query);
             begin_time = std::chrono::steady_clock::now();
-            auto tokens = ir::common::tokenize(query);
+            auto tokens = ir::common::tokenize(query, false);
             auto query_vec = ir::common::vec::vec_of_tokens(tokens, doc_index, doc_dict, doc_infos.size());
             result = ir::ir::topk(query_vec, K, leadfollow, doc_index, doc_infos);
         }

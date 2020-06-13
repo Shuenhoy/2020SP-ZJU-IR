@@ -69,7 +69,7 @@ inline std::vector<size_t> bool_eval(const std::string &input,
                                      const common::Dictionary &kgram_dict,
                                      const common::KGramInvIndex &kgram_index) {
 
-    std::vector<std::string_view> tokens = common::tokenize(input);
+    std::vector<std::string_view> tokens = common::tokenize(input, true);
     std::vector<size_t> ret;
 
     bool INV = false;
