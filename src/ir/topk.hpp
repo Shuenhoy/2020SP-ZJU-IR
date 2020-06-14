@@ -18,8 +18,7 @@ std::vector<size_t> topk(const common::vec::Vec &query, size_t K,
                          const common::LeadFollowInvIndex &lead_follow,
                          const common::DocInvIndex &doc_inv,
                          const common::DocumentInfos &doc_infos) {
-    std::unordered_set<size_t> docs;
-    std::priority_queue<std::pair<double, size_t>> leader_pq;
+    std::priority_queue<std::pair<double, size_t>> leader_pq, docs;
     spdlog::debug("comparing with leaders");
 
     for (size_t leader : lead_follow.items) {
@@ -39,13 +38,16 @@ std::vector<size_t> topk(const common::vec::Vec &query, size_t K,
         }
         while (docs.size() < K && !follower_pq.empty()) {
             if (follower_pq.top().first > 0.0001)
-                docs.insert(follower_pq.top().second);
+                docs.push(follower_pq.top());
             follower_pq.pop();
         }
     }
 
     std::vector<size_t> ret;
-    ret.insert(ret.end(), docs.begin(), docs.end());
+    while (!docs.empty()) {
+        ret.push_back(docs.top().second);
+        docs.pop();
+    }
     return ret;
 }
 
@@ -54,7 +56,8 @@ std::vector<size_t> acc_topk(const common::vec::Vec &query, size_t K,
                              const common::DocumentInfos &doc_infos) {
     std::vector<size_t> ret;
     std::priority_queue<std::pair<double, size_t>,
-                        std::vector<std::pair<double, size_t>>> pq;
+                        std::vector<std::pair<double, size_t>>>
+        pq;
     for (size_t doc_id = 0; doc_id < doc_infos.size(); doc_id++) {
         pq.push({common::cos_dist(query, doc_id, doc_inv, doc_infos), doc_id});
     }
