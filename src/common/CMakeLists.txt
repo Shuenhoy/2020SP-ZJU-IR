@@ -15,6 +15,7 @@ add_library(common
                 wildcard_match.hpp
                 debug.hpp
                 cos_dist.hpp
-                dummy.cpp)
+                dummy.cpp
+                json.hpp)
 
 target_link_libraries(common spdlog::spdlog)

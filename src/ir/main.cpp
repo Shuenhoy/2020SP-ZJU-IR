@@ -11,6 +11,7 @@
 #include "spelling_correction.hpp"
 #include "topk.hpp"
 #include "wildcard.hpp"
+#include "synonym.hpp"
 
 #include <common/vec_of_tokens.hpp>
 
@@ -96,6 +97,12 @@ int main(int argc, char *argv[]) {
     fin.close();
     log("LeadFollows index OK.");
 
+    std::ifstream jsonl_fin(index_dir + "/synonyms.jsonl");
+    assert(jsonl_fin.good());
+    json j;
+    ir::ir::parse_jsonl(j, jsonl_fin);
+    log("Synonyms dictionary OK.");
+
     log("Done.");
 
     /* 文档 ID 全集，用于布尔取反 */
@@ -142,7 +149,8 @@ int main(int argc, char *argv[]) {
                     )
                 );
             }
-            auto query_vec = ir::common::vec::vec_of_tokens(uc_tokens, doc_index, doc_dict, doc_infos.size());
+            auto uc_tokens_with_syn = ir::ir::synonym(uc_tokens, j, doc_dict, doc_index);
+            auto query_vec = ir::common::vec::vec_of_tokens(uc_tokens_with_syn, doc_index, doc_dict, doc_infos.size());
             if (mode == "2")
                 result = ir::ir::topk(query_vec, K, leadfollow, doc_index, doc_infos);
             else

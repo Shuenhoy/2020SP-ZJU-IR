@@ -26,7 +26,7 @@ inline std::vector<std::string_view> tokenize(std::string_view input, bool is_qu
     return tokens;
 }
 
-/* 词项归一化。步骤：(1) 转成小写字母 (2) ... */
+/* 词项归一化 */
 inline std::string unify_token(std::string_view input) {
     std::string unified_token(input);
     std::for_each(unified_token.begin(), unified_token.end(), [](char& c){
