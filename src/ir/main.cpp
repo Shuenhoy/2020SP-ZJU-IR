@@ -23,16 +23,15 @@ inline void log(std::string s) {
 }
 
 void print_result(std::vector<size_t> docids, ir::common::DocumentInfos doc_infos, double duration) {
-    /* TODO: 输出匹配部分摘要 */
     if (docids.size() == 0) {
         std::cout << "No result from " << doc_infos.size() << " documents";
         printf(" in %.4lf seconds.\n", duration);
         return;
     }
-    printf(">>> %d results from %d documents:\n", docids.size(), doc_infos.size());
-    printf("\n%8s %35s\n", "Rank", "Doc ID", "File Path");
+    printf(">>> %ld results from %ld documents:\n", docids.size(), doc_infos.size());
+    printf("\n%8s %35s\n", "Rank", "File Path");
     for (size_t i = 0; i < docids.size(); i++) {
-        printf("%8d %35s\n", i + 1, doc_infos[docids[i]].file_name.c_str());
+        printf("%8ld %35s\n", i + 1, doc_infos[docids[i]].file_name.c_str());
     }
     printf("\nin %.4lf seconds.\n", duration);
 }
