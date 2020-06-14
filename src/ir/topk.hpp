@@ -45,7 +45,8 @@ std::vector<size_t> topk(const common::vec::Vec &query, size_t K,
 
     std::vector<size_t> ret;
     while (!docs.empty()) {
-        ret.push_back(docs.top().second);
+        if (ret.size() == 0 || ret.back() != docs.top().second)
+            ret.push_back(docs.top().second);
         docs.pop();
     }
     return ret;
