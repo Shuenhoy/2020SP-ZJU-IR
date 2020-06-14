@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <queue>
 #include <random>
 
 namespace ir::build_index {
@@ -34,13 +35,13 @@ inline common::LeadFollowInvIndex build_lead_follow(
         vecs.push_back(common::vec::vec_of_tokens(ts, doc_index, dict, docinfos.size()));
     }
     for (auto i = 0; i < docinfos.size(); i++) {
-        std::vector<std::pair<double, size_t>> dis;
+        std::priority_queue<std::pair<double, size_t>> dis;
         for (auto j = 0; j < index.items.size(); j++) {
-            dis.push_back({common::cos_dist(vecs[j], i, doc_index, docinfos), index.items[j]});
+            dis.push({common::cos_dist(vecs[j], i, doc_index, docinfos), index.items[j]});
         }
-        std::sort(dis.begin(), dis.end());
-        for (auto j = 0; j < 10; j++) {
-            index.index[dis[j].second].push_back(i);
+        for (auto j = 0; j < 10 && !dis.empty(); j++) {
+            index.index[dis.top().second].push_back(i);
+            dis.pop();
         }
     }
 
