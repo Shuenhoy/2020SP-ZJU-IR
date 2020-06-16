@@ -56,9 +56,7 @@ std::vector<size_t> acc_topk(const common::vec::Vec &query, size_t K,
                              const common::DocInvIndex &doc_inv,
                              const common::DocumentInfos &doc_infos) {
     std::vector<size_t> ret;
-    std::priority_queue<std::pair<double, size_t>,
-                        std::vector<std::pair<double, size_t>>>
-        pq;
+    std::priority_queue<std::pair<double, size_t>> pq;
     for (size_t doc_id = 0; doc_id < doc_infos.size(); doc_id++) {
         pq.push({common::cos_dist(query, doc_id, doc_inv, doc_infos), doc_id});
     }

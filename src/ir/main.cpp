@@ -22,16 +22,39 @@ inline void log(std::string s) {
     std::cout << "[LOG] " << s << std::endl;
 }
 
-void print_result(std::vector<size_t> docids, ir::common::DocumentInfos doc_infos, double duration) {
+/* print boolean results */
+void print_result(std::vector<size_t> docids,
+                  ir::common::DocumentInfos doc_infos,
+                  double duration) {
     if (docids.size() == 0) {
         std::cout << "No result from " << doc_infos.size() << " documents";
         printf(" in %.4lf seconds.\n", duration);
         return;
     }
     printf(">>> %ld results from %ld documents:\n", docids.size(), doc_infos.size());
-    printf("\n%8s %35s\n", "Rank", "File Path");
+    printf("\n%8s %35s\n", "No.", "File Path");
     for (size_t i = 0; i < docids.size(); i++) {
         printf("%8ld %35s\n", i + 1, doc_infos[docids[i]].file_name.c_str());
+    }
+    printf("\nin %.4lf seconds.\n", duration);
+}
+
+/* print top k results */
+void print_result(std::vector<size_t> docids,
+                  ir::common::vec::Vec query_vec,
+                  ir::common::DocInvIndex index,
+                  ir::common::DocumentInfos doc_infos,
+                  double duration) {
+    if (docids.size() == 0) {
+        std::cout << "No result from " << doc_infos.size() << " documents";
+        printf(" in %.4lf seconds.\n", duration);
+        return;
+    }
+    printf(">>> %ld results from %ld documents:\n", docids.size(), doc_infos.size());
+    printf("\n%8s %35s %10s\n", "Rank", "File Path", "Cos Sim");
+    for (size_t i = 0; i < docids.size(); i++) {
+        double dis = ir::common::cos_dist(query_vec, docids[i], index, doc_infos);
+        printf("%8ld %35s %10.4lf\n", i + 1, doc_infos[docids[i]].file_name.c_str(), dis);
     }
     printf("\nin %.4lf seconds.\n", duration);
 }
@@ -129,6 +152,10 @@ int main(int argc, char *argv[]) {
                 std::getline(std::cin, query);
             begin_time = std::chrono::steady_clock::now();
             result = ir::ir::bool_eval(query, k, threshold, all, doc_dict, doc_index, kgram_dict, kgram_index);
+
+            auto end_time = std::chrono::steady_clock::now();
+            double duration = (std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count()) / 1000000.0;
+            print_result(result, doc_infos, duration);
         } else if (mode == "2" || mode == "3") {
             std::cout << "\nTopK Syntax: <K> <query_line>\n> ";
             size_t K;
@@ -148,19 +175,23 @@ int main(int argc, char *argv[]) {
                     )
                 );
             }
-            auto uc_tokens_with_syn = ir::ir::synonym(uc_tokens, j, doc_dict, doc_index);
-            auto query_vec = ir::common::vec::vec_of_tokens(uc_tokens_with_syn, doc_index, doc_dict, doc_infos.size());
-            if (mode == "2")
+            ir::common::vec::Vec query_vec;
+            if (mode == "2") {
+                auto uc_tokens_with_syn = ir::ir::synonym(uc_tokens, j, doc_dict, doc_index);
+                query_vec = ir::common::vec::vec_of_tokens(uc_tokens_with_syn, doc_index, doc_dict, doc_infos.size());
                 result = ir::ir::topk(query_vec, K, leadfollow, doc_index, doc_infos);
-            else
+            } else {
+                query_vec = ir::common::vec::vec_of_tokens(uc_tokens, doc_index, doc_dict, doc_infos.size());
                 result = ir::ir::acc_topk(query_vec, K, doc_index, doc_infos);
+            }
+
+            auto end_time = std::chrono::steady_clock::now();
+            double duration = (std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count()) / 1000000.0;
+            print_result(result, query_vec, doc_index, doc_infos, duration);
         } else {
             std::cout << "Mode error. Try again." << std::endl;
             continue;
         }
-        auto end_time = std::chrono::steady_clock::now();
-        double duration = (std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count()) / 1000000.0;
-        print_result(result, doc_infos, duration);
     }
 
     return 0;
