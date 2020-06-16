@@ -23,6 +23,7 @@ inline void log(std::string s) {
 }
 
 /* print boolean results */
+inline
 void print_result(std::vector<size_t> docids,
                   ir::common::DocumentInfos doc_infos,
                   double duration) {
@@ -40,6 +41,7 @@ void print_result(std::vector<size_t> docids,
 }
 
 /* print top k results */
+inline
 void print_result(std::vector<size_t> docids,
                   ir::common::vec::Vec query_vec,
                   ir::common::DocInvIndex index,

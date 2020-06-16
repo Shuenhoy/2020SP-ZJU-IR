@@ -14,6 +14,7 @@
 namespace ir::ir {
 
 /* 输入查询向量 query，返回最接近的 K 个文档 */
+inline
 std::vector<size_t> topk(const common::vec::Vec &query, size_t K,
                          const common::LeadFollowInvIndex &lead_follow,
                          const common::DocInvIndex &doc_inv,
@@ -52,6 +53,7 @@ std::vector<size_t> topk(const common::vec::Vec &query, size_t K,
     return ret;
 }
 
+inline
 std::vector<size_t> acc_topk(const common::vec::Vec &query, size_t K,
                              const common::DocInvIndex &doc_inv,
                              const common::DocumentInfos &doc_infos) {
